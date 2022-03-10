@@ -1,7 +1,9 @@
+package com.example.easyteamup;
+
 import android.content.ContentValues;
 import android.content.Context;
-import android.database..sqlite.SQLiteDatabase;
-import android.database..sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "coursedb";
