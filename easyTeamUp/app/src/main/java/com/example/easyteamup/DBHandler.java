@@ -32,6 +32,7 @@ public class DBHandler extends SQLiteOpenHelper {
     // variables for the profiles table
     private static final String PROFILE_ID_COL = "profileId";
     private static final String USERNAME_COL = "username";
+    private static final String PASSWORD = "password";
     // NOTE: going to get "pastEvents" and "futureEvents" from events table (querying for </> current datetime) and timeslots table (checking if final time is in selected times)
     // NOTE: going to get "currentlyHosting" from events table using profileId as eventHost
     // NOTE: going to get "messages" from messages table using profileId
@@ -67,7 +68,8 @@ public class DBHandler extends SQLiteOpenHelper {
 
         String createProfiles = "CREATE TABLE " + PROFILE_TABLE_NAME + " ("
                 + PROFILE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + USERNAME_COL + " TEXT)";
+                + USERNAME_COL + " TEXT"
+                + PASSWORD + "TEXT)";
 
         String createTimeslots = "CREATE TABLE " + TIMESLOTS_TABLE_NAME + " ("
                 + EVENT_ID_COL + " INTEGER PRIMARY KEY, "
@@ -101,12 +103,13 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addNewProfile(String username) {
+    public void addNewProfile(String username, String password) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(USERNAME_COL, username);
+        values.put(PASSWORD, password);
 
         db.insert(PROFILE_TABLE_NAME, null, values);
         db.close();

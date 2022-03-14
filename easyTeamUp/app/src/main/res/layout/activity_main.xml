@@ -65,4 +65,12 @@
         android:text="Events"
         android:textAllCaps="false" />
 
+    <Button
+        android:id="@+id/idBtnSignUp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Sign Up"
+        android:textAllCaps="false" />
+
 </LinearLayout>

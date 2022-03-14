@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private EditText eventNameEdt, eventHostEdt, eventLatEdt, eventLongEdt, eventDeadlineEdt;
     private Button addEventBtn;
+    private Button signUpBtn;
     private DBHandler dbHandler;
 
     public Button viewEventButton;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         eventDeadlineEdt = findViewById(R.id.idEdtDeadline);
         addEventBtn = findViewById(R.id.idBtnAddCourse);
         viewEventButton = findViewById(R.id.idBtnCreateToViewEvent);
+        signUpBtn = findViewById(R.id.idBtnSignUp);
 
         // creating a new dbhandler class
         // and passing our context to it.
@@ -53,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        signUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
                 startActivity(intent);
             }
         });
