@@ -9,35 +9,43 @@
 
     <!--Edit text to enter course name-->
     <EditText
-        android:id="@+id/idEdtCourseName"
+        android:id="@+id/idEdtEventName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:hint="Enter course Name" />
+        android:hint="Enter Event Name" />
 
     <!--edit text to enter course duration-->
     <EditText
-        android:id="@+id/idEdtCourseDuration"
+        android:id="@+id/idEdtEventHost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:hint="Enter Course Duration" />
+        android:hint="Enter Host ID" />
 
     <!--edit text to display course tracks-->
     <EditText
-        android:id="@+id/idEdtCourseTracks"
+        android:id="@+id/idEdtEventLatitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:hint="Enter Course Tracks" />
+        android:hint="Enter Event Latitude" />
 
     <!--edit text for course description-->
     <EditText
-        android:id="@+id/idEdtCourseDescription"
+        android:id="@+id/idEdtEventLongitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:hint="Enter Course Description" />
+        android:hint="Enter Event Longitude" />
+
+    <!--edit text for course description-->
+    <EditText
+        android:id="@+id/idEdtDeadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter Sign-Up Deadline" />
 
     <!--button for adding new course-->
     <Button
@@ -46,6 +54,15 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="Add Course"
+        android:textAllCaps="false" />
+
+    <!--button for switching to map page-->
+    <Button
+        android:id="@+id/idBtnCreateToViewEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Events"
         android:textAllCaps="false" />
 
 </LinearLayout>
