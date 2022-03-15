@@ -68,6 +68,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 // go to profile page
                 Intent intent = new Intent(SignUpActivity.this, ProfileActivity.class);
+                intent.putExtra("username",username);
                 startActivity(intent);
             }
         });

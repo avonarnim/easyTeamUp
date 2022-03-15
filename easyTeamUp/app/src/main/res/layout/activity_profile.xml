@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Your Profile"
- />
+        android:text="Your Profile" />
 
     <ImageView
         android:id="@+id/profilePhoto"
@@ -28,5 +27,26 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="Username" />
+
+    <TextView
+        android:id="@+id/pastEventsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Past Attended Events" />
+
+    <TextView
+        android:id="@+id/upcomingEventsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Upcoming Events (Attending)" />
+
+    <TextView
+        android:id="@+id/upcomingHostedEventsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Upcoming Events (Hosting)" />
 
 </LinearLayout>

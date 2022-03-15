@@ -2,8 +2,11 @@ package com.example.easyteamup;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
 
 public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
@@ -149,5 +152,28 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TIMESLOTS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MESSAGES_TABLE_NAME);
         onCreate(db);
+    }
+
+    public ArrayList<Event> currentlyHostingEvents() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME + "WHERE " + EVENT_HOST_COL + " = ?", new String[]{"data"});
+        ArrayList<Event> eventsList = new ArrayList<>();
+        if (cursorEvents.moveToFirst()) {
+            do {
+                // on below line we are adding the data from cursor to our array list.
+                eventsList.add(new Event(cursorEvents.getInt(1),
+                        cursorEvents.getString(2),
+                        cursorEvents.getString(3),
+                        cursorEvents.getFloat(4),
+                        cursorEvents.getFloat(5),
+                        cursorEvents.getString(6),
+                        cursorEvents.getString(7)));
+            } while (cursorEvents.moveToNext());
+            // moving our cursor to next.
+        }
+        // at last closing our cursor
+        // and returning our array list.
+        cursorEvents.close();
+        return eventsList;
     }
 }
