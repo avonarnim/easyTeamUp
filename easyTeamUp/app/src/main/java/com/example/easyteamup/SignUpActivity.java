@@ -17,7 +17,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.easyteamup.databinding.ActivityMainBinding;
+//import com.example.easyteamup.databinding.ActivityMainBinding;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;

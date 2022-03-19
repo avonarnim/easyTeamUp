@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".CreateEventActivity">
 
     <!--Edit text to enter course name-->
     <EditText
@@ -49,11 +49,11 @@
 
     <!--button for adding new course-->
     <Button
-        android:id="@+id/idBtnAddCourse"
+        android:id="@+id/idBtnCreateEvent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Add Course"
+        android:text="Create Event"
         android:textAllCaps="false" />
 
     <!--button for switching to map page-->
@@ -62,15 +62,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Events"
+        android:text="View Events"
         android:textAllCaps="false" />
 
+    <!--button for switching to map page-->
     <Button
-        android:id="@+id/idBtnSignUp"
+        android:id="@+id/idBtnCreateToProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Sign Up"
+        android:text="View Profile"
         android:textAllCaps="false" />
 
 </LinearLayout>

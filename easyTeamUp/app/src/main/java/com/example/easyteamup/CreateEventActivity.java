@@ -5,37 +5,28 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
-
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.easyteamup.databinding.ActivityMainBinding;
+//import com.example.easyteamup.databinding.ActivityMainBinding;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class MainActivity extends AppCompatActivity {
+public class CreateEventActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
+//    private ActivityMainBinding binding;
     private EditText eventNameEdt, eventHostEdt, eventLatEdt, eventLongEdt, eventDeadlineEdt;
-    private Button addEventBtn;
-    private Button signUpBtn;
+    private Button addEventBtn, profileBtn, viewEventButton;
     private DBHandler dbHandler;
-
-    public Button viewEventButton;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_create_event);
 
         // initializing all our variables.
         eventNameEdt = findViewById(R.id.idEdtEventName);
@@ -43,26 +34,26 @@ public class MainActivity extends AppCompatActivity {
         eventLatEdt = findViewById(R.id.idEdtEventLatitude);
         eventLongEdt = findViewById(R.id.idEdtEventLongitude);
         eventDeadlineEdt = findViewById(R.id.idEdtDeadline);
-        addEventBtn = findViewById(R.id.idBtnAddCourse);
+        addEventBtn = findViewById(R.id.idBtnCreateEvent);
         viewEventButton = findViewById(R.id.idBtnCreateToViewEvent);
-        signUpBtn = findViewById(R.id.idBtnSignUp);
+        profileBtn = findViewById(R.id.idBtnCreateToProfile);
 
         // creating a new dbhandler class
         // and passing our context to it.
-        dbHandler = new DBHandler(MainActivity.this);
+        dbHandler = new DBHandler(CreateEventActivity.this);
 
         viewEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                Intent intent = new Intent(CreateEventActivity.this, MapsActivity.class);
                 startActivity(intent);
             }
         });
 
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
+        profileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+                Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
                 startActivity(intent);
             }
         });
@@ -85,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // validating if the text fields are empty or not.
                 if (eventName.isEmpty() && eventHost.isEmpty() && latString.isEmpty() && longString.isEmpty() && eventDeadline.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please enter all the data..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateEventActivity.this, "Please enter all the data..", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -94,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 dbHandler.addNewEvent(eventName, eventHost, eventLat, eventLong, eventDeadlineLong);
 
                 // after adding the data we are displaying a toast message.
-                Toast.makeText(MainActivity.this, "Course has been added.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateEventActivity.this, "Course has been added.", Toast.LENGTH_SHORT).show();
                 eventNameEdt.setText("");
                 eventHostEdt.setText("");
                 eventLatEdt.setText("");
