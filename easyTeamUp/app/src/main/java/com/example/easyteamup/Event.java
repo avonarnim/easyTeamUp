@@ -1,7 +1,6 @@
 package com.example.easyteamup;
 
 import java.util.Date;
-import java.util.List;
 
 public class Event {
 
@@ -10,10 +9,10 @@ public class Event {
     private String host;
     private float latitude;
     private float longitude;
-    private String deadline;
-    private String finalTime;
+    private Long deadline;
+    private Long finalTime;
 
-    public Event(int id, String name, String host, float latitude, float longitude, String deadline, String finalTime) {
+    public Event(int id, String name, String host, float latitude, float longitude, Long deadline, Long finalTime) {
         this.name = name;
         this.host = host;
         this.latitude = latitude;
@@ -60,19 +59,19 @@ public class Event {
         this.longitude = longitude;
     }
 
-    public String getDeadline() {
+    public Long getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(String deadline) {
+    public void setDeadline(Long deadline) {
         this.deadline = deadline;
     }
 
-    public String getFinalTime() {
+    public Long getFinalTime() {
         return finalTime;
     }
 
-    public void setFinalTime(String finalTime) {
+    public void setFinalTime(Long finalTime) {
         this.finalTime = finalTime;
     }
 }

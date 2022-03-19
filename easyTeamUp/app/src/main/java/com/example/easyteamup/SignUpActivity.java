@@ -27,6 +27,9 @@ public class SignUpActivity extends AppCompatActivity {
     private Button signUpBtn;
     private EditText usernameEdt;
     private EditText passwordEdt;
+    private Button logInBtn;
+    private EditText usernameLoginEdt;
+    private EditText passwordLoginEdt;
     private DBHandler dbHandler;
 
     @Override
@@ -37,6 +40,10 @@ public class SignUpActivity extends AppCompatActivity {
         signUpBtn = findViewById(R.id.signUpButton);
         usernameEdt = findViewById(R.id.username);
         passwordEdt = findViewById(R.id.password);
+
+        logInBtn = findViewById(R.id.logInButton);
+        usernameLoginEdt = findViewById(R.id.usernameLogIn);
+        passwordLoginEdt = findViewById(R.id.passwordLogIn);
 
         // creating a new dbhandler class
         // and passing our context to it.
@@ -70,6 +77,40 @@ public class SignUpActivity extends AppCompatActivity {
                 Intent intent = new Intent(SignUpActivity.this, ProfileActivity.class);
                 intent.putExtra("username",username);
                 startActivity(intent);
+            }
+        });
+
+        logInBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // below line is to get data from all edit text fields.
+                String username = usernameLoginEdt.getText().toString();
+                String password = passwordLoginEdt.getText().toString();
+
+                // validating if the text fields are empty or not.
+                if (username.isEmpty() && password.isEmpty()) {
+                    Toast.makeText(SignUpActivity.this, "Please enter all the data..", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // on below line we are calling a method to add new
+                // course to sqlite data and pass all our values to it.
+                if (dbHandler.verifyProfile(username, password)) {
+                    // after validating the profile we are displaying a toast message.
+                    Toast.makeText(SignUpActivity.this, "You've been logged in!", Toast.LENGTH_SHORT).show();
+                    usernameEdt.setText("");
+                    passwordEdt.setText("");
+
+                    // go to profile page
+                    Intent intent = new Intent(SignUpActivity.this, ProfileActivity.class);
+                    intent.putExtra("username",username);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(SignUpActivity.this, "Please re-enter your username and password!", Toast.LENGTH_SHORT).show();
+                    usernameEdt.setText("");
+                    passwordEdt.setText("");
+                }
             }
         });
     }

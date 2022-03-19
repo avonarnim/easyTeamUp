@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
@@ -35,7 +37,7 @@ public class DBHandler extends SQLiteOpenHelper {
     // variables for the profiles table
     private static final String PROFILE_ID_COL = "profileId";
     private static final String USERNAME_COL = "username";
-    private static final String PASSWORD = "password";
+    private static final String PASSWORD_COL = "password";
     // NOTE: going to get "pastEvents" and "futureEvents" from events table (querying for </> current datetime) and timeslots table (checking if final time is in selected times)
     // NOTE: going to get "currentlyHosting" from events table using profileId as eventHost
     // NOTE: going to get "messages" from messages table using profileId
@@ -66,18 +68,18 @@ public class DBHandler extends SQLiteOpenHelper {
                 + EVENT_HOST_COL + " TEXT,"
                 + LATITUDE_COL + " REAL,"
                 + LONGITUDE_COL + " REAL,"
-                + DEADLINE_COL + " TEXT,"
-                + FINAL_TIME_COL + " TEXT)";
+                + DEADLINE_COL + " INTEGER,"
+                + FINAL_TIME_COL + " INTEGER)";
 
         String createProfiles = "CREATE TABLE " + PROFILE_TABLE_NAME + " ("
                 + PROFILE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + USERNAME_COL + " TEXT"
-                + PASSWORD + "TEXT)";
+                + PASSWORD_COL + "TEXT)";
 
         String createTimeslots = "CREATE TABLE " + TIMESLOTS_TABLE_NAME + " ("
                 + EVENT_ID_COL + " INTEGER PRIMARY KEY, "
                 + PROFILE_ID_COL + " INTEGER,"
-                + SELECTED_TIME_COL + " TEXT)";
+                + SELECTED_TIME_COL + " INTEGER)";
 
         String createMessages = "CREATE TABLE " + MESSAGES_TABLE_NAME + " ("
                 + MESSAGE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -91,7 +93,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(createMessages);
     }
 
-    public void addNewEvent(String eventName, String eventHost, Double latitude, Double longitude, String deadline) {
+    public void addNewEvent(String eventName, String eventHost, Double latitude, Double longitude, Long deadline) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -112,14 +114,30 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(USERNAME_COL, username);
-        values.put(PASSWORD, password);
+        values.put(PASSWORD_COL, password);
 
         db.insert(PROFILE_TABLE_NAME, null, values);
         db.close();
     }
 
+    public Boolean verifyProfile(String username, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Boolean validProfile = Boolean.FALSE;
+
+        Cursor cursorProfile = db.rawQuery("SELECT * " +
+                        " FROM " + PROFILE_TABLE_NAME +
+                        " WHERE " + USERNAME_COL + "=" + username +
+                        " AND " + PASSWORD_COL + "=" + password,
+                new String[]{"data"});
+        if (cursorProfile.moveToFirst()) {
+            validProfile = Boolean.TRUE;
+        }
+        cursorProfile.close();
+        return validProfile;
+    }
+
     // NOTE: could change to pass in a list of selected times, and then just perform multiple inserts here
-    public void addNewTimeslot(Integer eventId, Integer profileId, String selectedTime) {
+    public void addNewTimeslot(Integer eventId, Integer profileId, Long selectedTime) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -154,9 +172,12 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // TODO: need to add "AND (curr_time > deadline_col OR curr_time > finaltime_col)"
     public ArrayList<Event> currentlyHostingEvents() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME + "WHERE " + EVENT_HOST_COL + " = ?", new String[]{"data"});
+        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
+                " WHERE " + EVENT_HOST_COL + " = ?",
+                new String[]{"data"});
         ArrayList<Event> eventsList = new ArrayList<>();
         if (cursorEvents.moveToFirst()) {
             do {
@@ -166,8 +187,8 @@ public class DBHandler extends SQLiteOpenHelper {
                         cursorEvents.getString(3),
                         cursorEvents.getFloat(4),
                         cursorEvents.getFloat(5),
-                        cursorEvents.getString(6),
-                        cursorEvents.getString(7)));
+                        cursorEvents.getLong(6),
+                        cursorEvents.getLong(7)));
             } while (cursorEvents.moveToNext());
             // moving our cursor to next.
         }
@@ -175,5 +196,80 @@ public class DBHandler extends SQLiteOpenHelper {
         // and returning our array list.
         cursorEvents.close();
         return eventsList;
+    }
+
+    public ArrayList<Long> getAvailableTimeslots(String eventId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursorTimeslots = db.rawQuery("SELECT " + SELECTED_TIME_COL +
+                        " FROM " + TIMESLOTS_TABLE_NAME + "," + EVENT_TABLE_NAME +
+                        " WHERE " + EVENT_TABLE_NAME + "." + EVENT_ID_COL + "=" + eventId +
+                        " AND " + TIMESLOTS_TABLE_NAME + "." + EVENT_ID_COL + "=" + EVENT_TABLE_NAME + "." + EVENT_ID_COL +
+                        " AND " + TIMESLOTS_TABLE_NAME + "." + PROFILE_ID_COL + "=" + EVENT_TABLE_NAME + "." + EVENT_HOST_COL,
+                new String[]{"data"});
+        ArrayList<Long> timeSlots = new ArrayList<>();
+        if (cursorTimeslots.moveToFirst()) {
+            do {
+                timeSlots.add(cursorTimeslots.getLong(1));
+            } while (cursorTimeslots.moveToNext());
+        }
+        cursorTimeslots.close();
+        return timeSlots;
+    }
+
+    public Long decideOnTime(String eventId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursorTimeslots = db.rawQuery("SELECT " + SELECTED_TIME_COL + ", COUNT(" + SELECTED_TIME_COL + ") FROM " + TIMESLOTS_TABLE_NAME +
+                        " WHERE " + TIMESLOTS_TABLE_NAME + "." + EVENT_ID_COL + "=" + EVENT_TABLE_NAME + "." + EVENT_ID_COL,
+                new String[]{"data"});
+        ArrayList<Long> timeSlots = new ArrayList<>();
+        Long decidedTime = new Long(0);
+        int maxCount = 0;
+        if (cursorTimeslots.moveToFirst()) {
+            do {
+                int count = cursorTimeslots.getInt(2);
+                if (count > maxCount) {
+                    maxCount = count;
+                    String decidedTimeString = cursorTimeslots.getString(1);
+                    decidedTime = new Long(decidedTimeString);
+                }
+            } while (cursorTimeslots.moveToNext());
+        }
+        cursorTimeslots.close();
+        return decidedTime;
+    }
+
+    // if deadline has passed, get time of event
+    // if deadline has passed, call decideOnTime and update Event record with the decided time
+    // return time if possible
+    public Long getDecidedTime(String eventId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Long currentTime = new Long(System.currentTimeMillis() / 100L);
+        Event selectedEvent;
+
+        Cursor cursorEvent = db.rawQuery("SELECT " + DEADLINE_COL + ", " + FINAL_TIME_COL + " FROM " + EVENT_TABLE_NAME +
+                " WHERE " + EVENT_ID_COL + " = " + eventId,
+                new String[]{"data"});
+        if (cursorEvent.moveToFirst()) {
+            selectedEvent = new Event(cursorEvent.getInt(1),
+                    cursorEvent.getString(2),
+                    cursorEvent.getString(3),
+                    cursorEvent.getFloat(4),
+                    cursorEvent.getFloat(5),
+                    new Long(cursorEvent.getString(6)),
+                    new Long(cursorEvent.getString(7)));
+        } else {
+            return new Long(0);
+        }
+
+        if (currentTime > selectedEvent.getDeadline()) {
+            return new Long(0);
+        } else {
+            if (selectedEvent.getFinalTime() == 0) {
+                decideOnTime(eventId);
+                return getDecidedTime(eventId);
+            } else {
+                return selectedEvent.getFinalTime();
+            }
+        }
     }
 }

@@ -41,4 +41,37 @@
         android:layout_margin="10dp"
         android:text="Sign Up" />
 
+    <TextView
+        android:id="@+id/logInTitle"
+        android:layout_margin="10dp"
+        android:layout_width="278dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="16dp"
+        android:text="Already have an account? Log in below"
+        tools:layout_editor_absoluteY="133dp" />
+
+    <EditText
+        android:id="@+id/usernameLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter Username"
+        tools:layout_editor_absoluteX="10dp"
+        tools:layout_editor_absoluteY="213dp" />
+
+    <EditText
+        android:id="@+id/passwordLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter Password"
+        tools:layout_editor_absoluteY="298dp" />
+
+    <Button
+        android:id="@+id/logInButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Log In" />
+
 </LinearLayout>

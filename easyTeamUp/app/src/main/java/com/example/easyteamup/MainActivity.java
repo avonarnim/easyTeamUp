@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
                 Double eventLat = new Double(latString);
                 Double eventLong = new Double(longString);
                 String eventDeadline = eventDeadlineEdt.getText().toString();
+                // TODO: convert the selected time to unix timestamp
+                Long eventDeadlineLong = new Long(eventDeadline);
 
                 // validating if the text fields are empty or not.
                 if (eventName.isEmpty() && eventHost.isEmpty() && latString.isEmpty() && longString.isEmpty() && eventDeadline.isEmpty()) {
@@ -89,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // on below line we are calling a method to add new
                 // course to sqlite data and pass all our values to it.
-                dbHandler.addNewEvent(eventName, eventHost, eventLat, eventLong, eventDeadline);
+                dbHandler.addNewEvent(eventName, eventHost, eventLat, eventLong, eventDeadlineLong);
 
                 // after adding the data we are displaying a toast message.
                 Toast.makeText(MainActivity.this, "Course has been added.", Toast.LENGTH_SHORT).show();
