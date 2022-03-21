@@ -72,6 +72,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 + DEADLINE_COL + " INTEGER,"
                 + FINAL_TIME_COL + " INTEGER)";
 
+        // TODO: add jpg profile pictures in form of BLOB
+        // https://stackoverflow.com/questions/51301395/how-to-store-a-jpg-in-an-sqlite-database-with-python
         String createProfiles = "CREATE TABLE " + PROFILE_TABLE_NAME + " ("
                 + PROFILE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + USERNAME_COL + " TEXT"
