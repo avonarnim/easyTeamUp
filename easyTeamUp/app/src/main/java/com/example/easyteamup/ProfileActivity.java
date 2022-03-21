@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
             usernameText.setText(username);
             page.addView(usernameText);
 
-            dbHandler.getPublicProfile(username);
+            Profile prof = dbHandler.getPublicProfile(username);
 
             // TODO: insert view for profile picture
 
@@ -58,6 +58,8 @@ public class ProfileActivity extends AppCompatActivity {
             page.addView(pastText);
 
             // TODO: insert views for past events
+            // https://medium.com/mindorks/creating-dynamic-layouts-in-android-d4008b72f2d
+            // https://stackoverflow.com/questions/3328757/how-to-click-or-tap-on-a-textview-text
 
             TextView attendingText = new TextView(this);
             attendingText.setText("Upcoming Events (Attending)");

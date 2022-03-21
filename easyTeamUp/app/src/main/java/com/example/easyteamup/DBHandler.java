@@ -59,10 +59,8 @@ public class DBHandler extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // on below line we are creating
-        // an sqlite query and we are
-        // setting our column names
-        // along with their data types.
+        // Event table
+        // Note: preparing to use unix as timestamp
         String createEvents = "CREATE TABLE " + EVENT_TABLE_NAME + " ("
                 + EVENT_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + EVENT_NAME_COL + " TEXT,"
@@ -72,6 +70,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + DEADLINE_COL + " INTEGER,"
                 + FINAL_TIME_COL + " INTEGER)";
 
+        // Profile table
         // TODO: add jpg profile pictures in form of BLOB
         // https://stackoverflow.com/questions/51301395/how-to-store-a-jpg-in-an-sqlite-database-with-python
         String createProfiles = "CREATE TABLE " + PROFILE_TABLE_NAME + " ("
@@ -79,23 +78,28 @@ public class DBHandler extends SQLiteOpenHelper {
                 + USERNAME_COL + " TEXT"
                 + PASSWORD_COL + "TEXT)";
 
+        // Timeslots table
+        // Holds selected-as-ok timeslots for each event's interested users
         String createTimeslots = "CREATE TABLE " + TIMESLOTS_TABLE_NAME + " ("
                 + EVENT_ID_COL + " INTEGER PRIMARY KEY, "
                 + USERNAME_COL + " TEXT,"
                 + SELECTED_TIME_COL + " INTEGER)";
 
+        // Messages table
         String createMessages = "CREATE TABLE " + MESSAGES_TABLE_NAME + " ("
                 + MESSAGE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + SENDER_USERNAME_COL + " INTEGER,"
                 + RECIPIENT_USERNAME_COL + " TEXT,"
                 + BODY_COL + " TEXT)";
 
+        // Creates tables
         db.execSQL(createEvents);
         db.execSQL(createProfiles);
         db.execSQL(createTimeslots);
         db.execSQL(createMessages);
     }
 
+    // Inserts a new event into the Event table
     public void addNewEvent(String eventName, String eventHost, Double latitude, Double longitude, Long deadline) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -111,6 +115,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Inserts a new user profile into the Profile table
     public void addNewProfile(String username, String password) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -123,6 +128,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Checks to see if a specified username-password combination is in the profile table
     public Boolean verifyProfile(String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         Boolean validProfile = Boolean.FALSE;
@@ -139,8 +145,8 @@ public class DBHandler extends SQLiteOpenHelper {
         return validProfile;
     }
 
-    // get "pastEvents" and "futureEvents" from events table (querying for </> current datetime) and timeslots table (checking if final time is in selected times)
-    // get "messages" from messages table using profileId
+    // Returns a specified user's profile
+    // Wraps calls to get past events, upcoming events, and messages
     public Profile getPublicProfile(String username) {
 
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
@@ -152,6 +158,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return new Profile(username, pastEvents, futureEvents, currentlyHosting, messages);
     }
 
+    // Inserts a new availability into Timeslot table
     // NOTE: could change to pass in a list of selected times, and then just perform multiple inserts here
     public void addNewTimeslot(Integer eventId, Integer profileId, Long selectedTime) {
 
@@ -166,6 +173,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Inserts a new message into the Message table
     public void addNewMessage(String sender, String recipient, String body) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -188,17 +196,18 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Grabs future (either final time hasn't even been decided yet or final time is greater than
+    // current time) events a user is hosting (determined by event_host_col == username)
+    // Creates ArrayList with those events
     public ArrayList<Event> currentlyHostingEvents(String username, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
                 " WHERE " + EVENT_HOST_COL + " = " + username +
-                " AND " + DEADLINE_COL + " < " + currentTime +
                 " AND (" + FINAL_TIME_COL + " IS NULL OR " + FINAL_TIME_COL + " > " + currentTime + ")",
                 new String[]{"data"});
         ArrayList<Event> eventsList = new ArrayList<>();
         if (cursorEvents.moveToFirst()) {
             do {
-                // on below line we are adding the data from cursor to our array list.
                 eventsList.add(new Event(cursorEvents.getInt(1),
                         cursorEvents.getString(2),
                         cursorEvents.getString(3),
@@ -207,15 +216,16 @@ public class DBHandler extends SQLiteOpenHelper {
                         cursorEvents.getLong(6),
                         cursorEvents.getLong(7)));
             } while (cursorEvents.moveToNext());
-            // moving our cursor to next.
         }
-        // at last closing our cursor
-        // and returning our array list.
         cursorEvents.close();
         return eventsList;
     }
 
-    // want events where a user has timeslots chosen for the event & the event is in the future
+    // Grabs events where a user has timeslots chosen for the event & the event is in the future
+    // Having a timeslot is determined by aggregating all of a user's timeslots, grouping them by
+    // event_id, then making sure all events are in the future
+    // Being in the future is determined by either not having a final time assigned yet or having a
+    // final time greater than the current time
     public ArrayList<Event> futureEvents(String username, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
@@ -268,6 +278,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return eventsList;
     }
 
+    // Returns a user's messages
     public ArrayList<Message> getMessages(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursorMessages = db.rawQuery("SELECT * FROM " + MESSAGES_TABLE_NAME +
@@ -285,6 +296,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return messageList;
     }
 
+    // Returns all of a host's possible timeslots allowed for a specific event
     public ArrayList<Long> getAvailableTimeslots(String eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursorTimeslots = db.rawQuery("SELECT " + SELECTED_TIME_COL +
@@ -303,6 +315,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return timeSlots;
     }
 
+    // Finds the most commonly-selected timeslot for an event
     public Long decideOnTime(String eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursorTimeslots = db.rawQuery("SELECT " + SELECTED_TIME_COL + ", COUNT(" + SELECTED_TIME_COL + ") FROM " + TIMESLOTS_TABLE_NAME +
