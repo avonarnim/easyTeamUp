@@ -24,6 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private DBHandler dbHandler;
@@ -60,18 +62,36 @@ public class ProfileActivity extends AppCompatActivity {
             // TODO: insert views for past events
             // https://medium.com/mindorks/creating-dynamic-layouts-in-android-d4008b72f2d
             // https://stackoverflow.com/questions/3328757/how-to-click-or-tap-on-a-textview-text
+            ArrayList<Event> pastEvents = dbHandler.pastEvents(username, System.currentTimeMillis());
+            for(int i = 0; i < pastEvents.size(); i++) {
+                TextView textView = new TextView(this);
+                textView.setText(pastEvents.get(i).getName());
+                page.addView(textView);
+            }
 
             TextView attendingText = new TextView(this);
             attendingText.setText("Upcoming Events (Attending)");
             page.addView(attendingText);
 
             // TODO: insert views for upcoming attending events
+            ArrayList<Event> futureEvents = dbHandler.futureEvents(username, System.currentTimeMillis());
+            for(int i = 0; i < futureEvents.size(); i++) {
+                TextView textView = new TextView(this);
+                textView.setText(futureEvents.get(i).getName());
+                page.addView(textView);
+            }
 
             TextView hostingText = new TextView(this);
             hostingText.setText("Upcoming Events (Hosting)");
             page.addView(hostingText);
 
             // TODO: insert views for upcoming hosting events
+            ArrayList<Event> currentlyHosting = dbHandler.currentlyHostingEvents(username, System.currentTimeMillis());
+            for(int i = 0; i < currentlyHosting.size(); i++) {
+                TextView textView = new TextView(this);
+                textView.setText(currentlyHosting.get(i).getName());
+                page.addView(textView);
+            }
 
         }
     }
