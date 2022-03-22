@@ -63,9 +63,18 @@ public class ProfileActivity extends AppCompatActivity {
             // https://medium.com/mindorks/creating-dynamic-layouts-in-android-d4008b72f2d
             // https://stackoverflow.com/questions/3328757/how-to-click-or-tap-on-a-textview-text
             ArrayList<Event> pastEvents = dbHandler.pastEvents(username, System.currentTimeMillis());
-            for(int i = 0; i < pastEvents.size(); i++) {
+            for (int i = 0; i < pastEvents.size(); i++) {
                 TextView textView = new TextView(this);
-                textView.setText(pastEvents.get(i).getName());
+                String eventName = pastEvents.get(i).getName();
+                textView.setText(eventName);
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Intent intent = new Intent(ProfileActivity.this, EventActivity.class);
+//                        intent.putExtra("eventName",eventName);
+//                        startActivity(intent);
+                    }
+                });
                 page.addView(textView);
             }
 
@@ -75,9 +84,18 @@ public class ProfileActivity extends AppCompatActivity {
 
             // TODO: insert views for upcoming attending events
             ArrayList<Event> futureEvents = dbHandler.futureEvents(username, System.currentTimeMillis());
-            for(int i = 0; i < futureEvents.size(); i++) {
+            for (int i = 0; i < futureEvents.size(); i++) {
                 TextView textView = new TextView(this);
-                textView.setText(futureEvents.get(i).getName());
+                String eventName = futureEvents.get(i).getName();
+                textView.setText(eventName);
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Intent intent = new Intent(ProfileActivity.this, EventActivity.class);
+//                        intent.putExtra("eventName",eventName);
+//                        startActivity(intent);
+                    }
+                });
                 page.addView(textView);
             }
 
@@ -87,12 +105,20 @@ public class ProfileActivity extends AppCompatActivity {
 
             // TODO: insert views for upcoming hosting events
             ArrayList<Event> currentlyHosting = dbHandler.currentlyHostingEvents(username, System.currentTimeMillis());
-            for(int i = 0; i < currentlyHosting.size(); i++) {
+            for (int i = 0; i < currentlyHosting.size(); i++) {
                 TextView textView = new TextView(this);
-                textView.setText(currentlyHosting.get(i).getName());
+                String eventName = currentlyHosting.get(i).getName();
+                textView.setText(eventName);
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Intent intent = new Intent(ProfileActivity.this, EventActivity.class);
+//                        intent.putExtra("eventName",eventName);
+//                        startActivity(intent);
+                    }
+                });
                 page.addView(textView);
             }
-
         }
     }
 }
