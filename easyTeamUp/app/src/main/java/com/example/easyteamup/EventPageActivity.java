@@ -49,8 +49,8 @@ public class EventPageActivity extends AppCompatActivity {
             String username = extras.getString("username");
             Event eventInfo = dbHandler.getEventInfo(eventId);
 
-            if(eventInfo.getHost() == username) {
-                // user is the host of this event so they are able to edit (EditText)
+            // if user is the host of this event AND event deadline has not passed, they are able to edit (EditText) the event
+            if((eventInfo.getHost() == username) && (eventInfo.getDeadline() < System.currentTimeMillis())) {
                 EditText eventIdText = new EditText(this);
                 eventIdText.setText(eventId);
                 page.addView(eventIdText);
@@ -100,7 +100,6 @@ public class EventPageActivity extends AppCompatActivity {
                         dbHandler.addNewMessage(eventInfo.getHost(), eventInfo.getHost(), "Changes have been made to event: " + name);
                     }
                 });
-
             }
             else {
                 // User is not the host and cannot edit event details (TextView)
