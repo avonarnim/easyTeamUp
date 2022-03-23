@@ -59,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
             pastText.setText("Past Events");
             page.addView(pastText);
 
-            // TODO: insert views for past events
+            // insert views for past events
             // https://medium.com/mindorks/creating-dynamic-layouts-in-android-d4008b72f2d
             // https://stackoverflow.com/questions/3328757/how-to-click-or-tap-on-a-textview-text
             ArrayList<Event> pastEvents = dbHandler.pastEvents(username, System.currentTimeMillis());
@@ -85,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
             attendingText.setText("Upcoming Events (Attending)");
             page.addView(attendingText);
 
-            // TODO: insert views for upcoming attending events
+            // insert views for upcoming attending events
             ArrayList<Event> futureEvents = dbHandler.futureEvents(username, System.currentTimeMillis());
             for (int i = 0; i < futureEvents.size(); i++) {
                 TextView textView = new TextView(this);
@@ -109,7 +109,7 @@ public class ProfileActivity extends AppCompatActivity {
             hostingText.setText("Upcoming Events (Hosting)");
             page.addView(hostingText);
 
-            // TODO: insert views for upcoming hosting events
+            // insert views for upcoming hosting events
             ArrayList<Event> currentlyHosting = dbHandler.currentlyHostingEvents(username, System.currentTimeMillis());
             for (int i = 0; i < currentlyHosting.size(); i++) {
                 TextView textView = new TextView(this);
@@ -126,6 +126,18 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+                page.addView(textView);
+            }
+
+            // insert views for all Messages
+            TextView messagesText = new TextView(this);
+            messagesText.setText("Messages");
+            page.addView(messagesText);
+
+            ArrayList<Message> messages = dbHandler.getMessages(username);
+            for (int i = 0; i < messages.size(); i++) {
+                TextView textView = new TextView(this);
+                textView.setText("FROM: " + messages.get(i).getSender() + "\n" + messages.get(i).getBody());
                 page.addView(textView);
             }
         }
