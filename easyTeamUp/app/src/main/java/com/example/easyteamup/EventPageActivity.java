@@ -101,8 +101,53 @@ public class EventPageActivity extends AppCompatActivity {
                     }
                 });
             }
+            // TODO: update this function once guestlist is added to database
+//            else if (user is on the guest list) {
+//                TextView eventIdText = new TextView(this);
+//                eventIdText.setText(eventId);
+//                page.addView(eventIdText);
+//
+//                TextView nameText = new TextView(this);
+//                nameText.setText("Event Name: " + eventInfo.getName());
+//                page.addView(nameText);
+//
+//                TextView hostText = new TextView(this);
+//                hostText.setText("Host: " + eventInfo.getHost());
+//                page.addView(hostText);
+//
+//                TextView longitudeText = new TextView(this);
+//                longitudeText.setText("Longitude: " + eventInfo.getLongitude());
+//                page.addView(longitudeText);
+//
+//                TextView latitudeText = new TextView(this);
+//                latitudeText.setText("Latitude: " + eventInfo.getLatitude());
+//                page.addView(latitudeText);
+//
+//                TextView deadlineText = new TextView(this);
+//                deadlineText.setText("Deadline: " + eventInfo.getDeadline());
+//                page.addView(deadlineText);
+//
+//                TextView finalTimeText = new TextView(this);
+//                finalTimeText.setText("Final Time: " + eventInfo.getFinalTime());
+//                page.addView(finalTimeText);
+//
+//                Button withdrawBtn = new Button(this);
+//                withdrawBtn.setText("Save Changes");
+//                withdrawBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//                page.addView(withdrawBtn);
+//
+//                withdrawBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        // update event guest list and remove this user
+//                        dbHandler.updateEventGuestList(eventId);
+//                        // Send message to host
+//                        dbHandler.addNewMessage(username, eventInfo.getHost(), "User " + username + " has withdrawn from your event " + eventInfo.getName());
+//                    }
+//                });
+//            }
             else {
-                // User is not the host and cannot edit event details (TextView)
+                // User is not the host and not on guest list so they cannot edit event details (TextView)
                 TextView eventIdText = new TextView(this);
                 eventIdText.setText(eventId);
                 page.addView(eventIdText);
