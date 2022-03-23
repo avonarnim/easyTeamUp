@@ -66,13 +66,16 @@ public class ProfileActivity extends AppCompatActivity {
             for (int i = 0; i < pastEvents.size(); i++) {
                 TextView textView = new TextView(this);
                 String eventName = pastEvents.get(i).getName();
+                int eventId = pastEvents.get(i).getId();
                 textView.setText(eventName);
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        Intent intent = new Intent(ProfileActivity.this, EventActivity.class);
-//                        intent.putExtra("eventName",eventName);
-//                        startActivity(intent);
+                        Intent intent = new Intent(ProfileActivity.this, EventPageActivity.class);
+                        // pass eventId and username to the event activity
+                        intent.putExtra("eventId",eventId);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
                     }
                 });
                 page.addView(textView);
@@ -87,13 +90,16 @@ public class ProfileActivity extends AppCompatActivity {
             for (int i = 0; i < futureEvents.size(); i++) {
                 TextView textView = new TextView(this);
                 String eventName = futureEvents.get(i).getName();
+                int eventId = futureEvents.get(i).getId();
                 textView.setText(eventName);
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        Intent intent = new Intent(ProfileActivity.this, EventActivity.class);
-//                        intent.putExtra("eventName",eventName);
-//                        startActivity(intent);
+                        Intent intent = new Intent(ProfileActivity.this, EventPageActivity.class);
+                        // pass eventId and username to the event activity
+                        intent.putExtra("eventId",eventId);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
                     }
                 });
                 page.addView(textView);
@@ -108,13 +114,16 @@ public class ProfileActivity extends AppCompatActivity {
             for (int i = 0; i < currentlyHosting.size(); i++) {
                 TextView textView = new TextView(this);
                 String eventName = currentlyHosting.get(i).getName();
+                int eventId = currentlyHosting.get(i).getId();
                 textView.setText(eventName);
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        Intent intent = new Intent(ProfileActivity.this, EventActivity.class);
-//                        intent.putExtra("eventName",eventName);
-//                        startActivity(intent);
+                        Intent intent = new Intent(ProfileActivity.this, EventPageActivity.class);
+                        // pass eventId and username to the event activity
+                        intent.putExtra("eventId",eventId);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
                     }
                 });
                 page.addView(textView);

@@ -158,6 +158,34 @@ public class DBHandler extends SQLiteOpenHelper {
         return new Profile(username, pastEvents, futureEvents, currentlyHosting, messages);
     }
 
+    // Returns Event object
+    public Event getEventInfo(int eventId) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
+                        " WHERE " + EVENT_ID_COL + " = " + eventId + ")", new String[]{"data"});
+        return new Event(cursorEvents.getInt(1),
+                        cursorEvents.getString(2),
+                        cursorEvents.getString(3),
+                        cursorEvents.getFloat(4),
+                        cursorEvents.getFloat(5),
+                        cursorEvents.getLong(6),
+                        cursorEvents.getLong(7));
+    }
+
+    public void updateEventInfo(Event event) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(EVENT_NAME_COL, event.getName());
+        values.put(LATITUDE_COL, event.getLatitude());
+        values.put(LONGITUDE_COL, event.getLongitude());
+        values.put(DEADLINE_COL, event.getDeadline());
+        values.put(FINAL_TIME_COL, event.getFinalTime());
+
+        db.update(EVENT_TABLE_NAME,values,"eventId = '"+event.getId()+"'",null);
+    }
+
     // Inserts a new availability into Timeslot table
     // NOTE: could change to pass in a list of selected times, and then just perform multiple inserts here
     public void addNewTimeslot(Integer eventId, Integer profileId, Long selectedTime) {
