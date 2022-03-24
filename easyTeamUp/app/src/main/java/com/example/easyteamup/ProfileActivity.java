@@ -25,6 +25,7 @@ import android.widget.Toast;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -46,9 +47,8 @@ public class ProfileActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String username = extras.getString("username");
-//            TextView usernameText = (TextView)findViewById(R.id.profileUsername);
             TextView usernameText = new TextView(this);
-            usernameText.setText(username);
+            usernameText.setText("Username: " + username);
             page.addView(usernameText);
 
             Profile prof = dbHandler.getPublicProfile(username);
@@ -62,7 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
             // insert views for past events
             // https://medium.com/mindorks/creating-dynamic-layouts-in-android-d4008b72f2d
             // https://stackoverflow.com/questions/3328757/how-to-click-or-tap-on-a-textview-text
-            ArrayList<Event> pastEvents = dbHandler.pastEvents(username, System.currentTimeMillis());
+            List<Event> pastEvents = prof.getPastEvents();
             for (int i = 0; i < pastEvents.size(); i++) {
                 TextView textView = new TextView(this);
                 String eventName = pastEvents.get(i).getName();
@@ -86,7 +86,7 @@ public class ProfileActivity extends AppCompatActivity {
             page.addView(attendingText);
 
             // insert views for upcoming attending events
-            ArrayList<Event> futureEvents = dbHandler.futureEvents(username, System.currentTimeMillis());
+            List<Event> futureEvents = prof.getFutureEvents();
             for (int i = 0; i < futureEvents.size(); i++) {
                 TextView textView = new TextView(this);
                 String eventName = futureEvents.get(i).getName();
@@ -110,7 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
             page.addView(hostingText);
 
             // insert views for upcoming hosting events
-            ArrayList<Event> currentlyHosting = dbHandler.currentlyHostingEvents(username, System.currentTimeMillis());
+            List<Event> currentlyHosting = prof.getCurrentlyHosting();
             for (int i = 0; i < currentlyHosting.size(); i++) {
                 TextView textView = new TextView(this);
                 String eventName = currentlyHosting.get(i).getName();

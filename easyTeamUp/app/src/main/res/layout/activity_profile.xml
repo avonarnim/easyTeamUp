@@ -8,46 +8,46 @@
     android:id="@+id/linearLayout"
     tools:context=".ProfileActivity">
 
-    <TextView
-        android:id="@+id/profileTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Your Profile" />
+<!--    <TextView-->
+<!--        android:id="@+id/profileTitle"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:text="Your Profile" />-->
 
-    <ImageView
-        android:id="@+id/profilePhoto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        tools:srcCompat="@tools:sample/avatars" />
+<!--    <ImageView-->
+<!--        android:id="@+id/profilePhoto"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        tools:srcCompat="@tools:sample/avatars" />-->
 
-    <TextView
-        android:id="@+id/profileUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Username" />
+<!--    <TextView-->
+<!--        android:id="@+id/profileUsername"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:text="Username" />-->
 
-    <TextView
-        android:id="@+id/pastEventsList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Past Attended Events" />
+<!--    <TextView-->
+<!--        android:id="@+id/pastEventsList"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:text="Past Attended Events" />-->
 
-    <TextView
-        android:id="@+id/upcomingEventsList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Upcoming Events (Attending)" />
+<!--    <TextView-->
+<!--        android:id="@+id/upcomingEventsList"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:text="Upcoming Events (Attending)" />-->
 
-    <TextView
-        android:id="@+id/upcomingHostedEventsList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Upcoming Events (Hosting)" />
+<!--    <TextView-->
+<!--        android:id="@+id/upcomingHostedEventsList"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:text="Upcoming Events (Hosting)" />-->
 
 </LinearLayout>

@@ -15,7 +15,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
 
     // below int is our database version
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     // variables are for table names.
     private static final String EVENT_TABLE_NAME = "events";
@@ -73,20 +73,20 @@ public class DBHandler extends SQLiteOpenHelper {
         // Profile table
         // TODO: add jpg profile pictures in form of BLOB
         // https://stackoverflow.com/questions/51301395/how-to-store-a-jpg-in-an-sqlite-database-with-python
-        String createProfiles = "CREATE TABLE " + PROFILE_TABLE_NAME + " ("
+        String createProfiles = "CREATE TABLE IF NOT EXISTS " + PROFILE_TABLE_NAME + " ("
                 + PROFILE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + USERNAME_COL + " TEXT"
-                + PASSWORD_COL + "TEXT)";
+                + PASSWORD_COL + " TEXT)";
 
         // Timeslots table
         // Holds selected-as-ok timeslots for each event's interested users
-        String createTimeslots = "CREATE TABLE " + TIMESLOTS_TABLE_NAME + " ("
+        String createTimeslots = "CREATE TABLE IF NOT EXISTS " + TIMESLOTS_TABLE_NAME + " ("
                 + EVENT_ID_COL + " INTEGER PRIMARY KEY, "
                 + USERNAME_COL + " TEXT,"
                 + SELECTED_TIME_COL + " INTEGER)";
 
         // Messages table
-        String createMessages = "CREATE TABLE " + MESSAGES_TABLE_NAME + " ("
+        String createMessages = "CREATE TABLE IF NOT EXISTS " + MESSAGES_TABLE_NAME + " ("
                 + MESSAGE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + SENDER_USERNAME_COL + " INTEGER,"
                 + RECIPIENT_USERNAME_COL + " TEXT,"
@@ -162,6 +162,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public Event getEventInfo(int eventId) {
 
         SQLiteDatabase db = this.getReadableDatabase();
+
         Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
                         " WHERE " + EVENT_ID_COL + " = " + eventId + ")", new String[]{"data"});
         return new Event(cursorEvents.getInt(1),
@@ -199,7 +200,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(EVENT_ID_COL, eventId);
-        values.put(PROFILE_ID_COL, profileId);
+        values.put(USERNAME_COL, profileId);
         values.put(SELECTED_TIME_COL, selectedTime);
 
         db.insert(TIMESLOTS_TABLE_NAME, null, values);
@@ -234,10 +235,11 @@ public class DBHandler extends SQLiteOpenHelper {
     // Creates ArrayList with those events
     public ArrayList<Event> currentlyHostingEvents(String username, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
+        String[] args = {"'" + username + "'"};
         Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
-                " WHERE " + EVENT_HOST_COL + " = " + username +
+                " WHERE " + EVENT_HOST_COL + " = ?" +
                 " AND (" + FINAL_TIME_COL + " IS NULL OR " + FINAL_TIME_COL + " > " + currentTime + ")",
-                new String[]{"data"});
+                args);
         ArrayList<Event> eventsList = new ArrayList<>();
         if (cursorEvents.moveToFirst()) {
             do {
@@ -261,13 +263,14 @@ public class DBHandler extends SQLiteOpenHelper {
     // final time greater than the current time
     public ArrayList<Event> futureEvents(String username, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
-                    " WHERE ((" + FINAL_TIME_COL + " IS NOT NULL" +
-                    " AND " + FINAL_TIME_COL + " > " + currentTime + ")" +
-                    " OR " + FINAL_TIME_COL + " IS NULL)" +
-                    " AND " + EVENT_ID_COL + " IN (SELECT DISTINCT(" + EVENT_ID_COL + ") FROM " + TIMESLOTS_TABLE_NAME +
-                    " WHERE " + USERNAME_COL + " = " + username +")",
-                new String[]{"data"});
+        String[] args = {"'" + username + "'"};
+        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME + ", " + TIMESLOTS_TABLE_NAME +
+                    " WHERE ((" + EVENT_TABLE_NAME + "." + FINAL_TIME_COL + " IS NOT NULL" +
+                    " AND " + EVENT_TABLE_NAME + "." + FINAL_TIME_COL + " > " + currentTime + ")" +
+                    " OR " + EVENT_TABLE_NAME + "." + FINAL_TIME_COL + " IS NULL)" +
+                    " AND " + EVENT_TABLE_NAME + "." + EVENT_ID_COL + " = " + TIMESLOTS_TABLE_NAME + "." + EVENT_ID_COL +
+                    " AND " + TIMESLOTS_TABLE_NAME + "." + USERNAME_COL + " = ?",
+                args);
 
         ArrayList<Event> eventsList = new ArrayList<>();
         if (cursorEvents.moveToFirst()) {
@@ -288,35 +291,41 @@ public class DBHandler extends SQLiteOpenHelper {
     // want events where a timeslot chosen by the user matched the final_time_col && event is in future
     public ArrayList<Event> pastEvents(String username, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
-                    " WHERE " + FINAL_TIME_COL + " IS NOT NULL" +
-                    " AND " + FINAL_TIME_COL + " < " + currentTime +
-                    " AND " + EVENT_ID_COL + " IN (SELECT DISTINCT(" + EVENT_ID_COL + ") FROM " + TIMESLOTS_TABLE_NAME +
-                    " WHERE " + USERNAME_COL + " = " + username +")",
-                new String[]{"data"});
+        String[] args = {"'" + username + "'"};
+
+        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME + ", " + TIMESLOTS_TABLE_NAME +
+                        " WHERE ((" + EVENT_TABLE_NAME + "." + FINAL_TIME_COL + " IS NOT NULL" +
+                        " AND " + EVENT_TABLE_NAME + "." + FINAL_TIME_COL + " < " + currentTime + ")" +
+                        " OR " + EVENT_TABLE_NAME + "." + FINAL_TIME_COL + " IS NULL)" +
+                        " AND " + EVENT_TABLE_NAME + "." + EVENT_ID_COL + " = " + TIMESLOTS_TABLE_NAME + "." + EVENT_ID_COL +
+                        " AND " + TIMESLOTS_TABLE_NAME + "." + USERNAME_COL + " =?",
+                args);
 
         ArrayList<Event> eventsList = new ArrayList<>();
-        if (cursorEvents.moveToFirst()) {
-            do {
-                eventsList.add(new Event(cursorEvents.getInt(1),
-                        cursorEvents.getString(2),
-                        cursorEvents.getString(3),
-                        cursorEvents.getFloat(4),
-                        cursorEvents.getFloat(5),
-                        cursorEvents.getLong(6),
-                        cursorEvents.getLong(7)));
-            } while (cursorEvents.moveToNext());
+        if(cursorEvents != null) {
+            if (cursorEvents.moveToFirst()) {
+                do {
+                    eventsList.add(new Event(cursorEvents.getInt(1),
+                            cursorEvents.getString(2),
+                            cursorEvents.getString(3),
+                            cursorEvents.getFloat(4),
+                            cursorEvents.getFloat(5),
+                            cursorEvents.getLong(6),
+                            cursorEvents.getLong(7)));
+                } while (cursorEvents.moveToNext());
+            }
+            cursorEvents.close();
         }
-        cursorEvents.close();
         return eventsList;
     }
 
     // Returns a user's messages
     public ArrayList<Message> getMessages(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
+        String[] args = {"'" + username + "'"};
         Cursor cursorMessages = db.rawQuery("SELECT * FROM " + MESSAGES_TABLE_NAME +
-                " WHERE " + RECIPIENT_USERNAME_COL + "=" + username,
-                new String[]{"data"});
+                " WHERE " + RECIPIENT_USERNAME_COL + " = ?",
+                args);
         ArrayList<Message> messageList = new ArrayList<>();
         if (cursorMessages.moveToFirst()) {
             do {

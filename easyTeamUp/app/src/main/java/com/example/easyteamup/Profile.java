@@ -17,4 +17,23 @@ public class Profile {
         this.messages = messages;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public List<Event> getPastEvents() {
+        return pastEvents;
+    }
+
+    public List<Event> getCurrentlyHosting() {
+        return currentlyHosting;
+    }
+
+    public List<Event> getFutureEvents() {
+        return futureEvents;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
 }
