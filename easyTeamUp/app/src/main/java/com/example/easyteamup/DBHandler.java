@@ -15,7 +15,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
 
     // below int is our database version
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     // variables are for table names.
     private static final String EVENT_TABLE_NAME = "events";
@@ -39,6 +39,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String PROFILE_ID_COL = "profileId";
     private static final String USERNAME_COL = "username";
     private static final String PASSWORD_COL = "password";
+    private static final String PICTURE_COL = "picture";
     // NOTE: going to get "pastEvents" and "futureEvents" from events table (querying for </> current datetime) and timeslots table (checking if final time is in selected times)
     // NOTE: going to get "currentlyHosting" from events table using profileId as eventHost
     // NOTE: going to get "messages" from messages table using profileId
@@ -75,8 +76,9 @@ public class DBHandler extends SQLiteOpenHelper {
         // https://stackoverflow.com/questions/51301395/how-to-store-a-jpg-in-an-sqlite-database-with-python
         String createProfiles = "CREATE TABLE IF NOT EXISTS " + PROFILE_TABLE_NAME + " ("
                 + PROFILE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + USERNAME_COL + " TEXT"
-                + PASSWORD_COL + " TEXT)";
+                + USERNAME_COL + " TEXT, "
+                + PASSWORD_COL + " TEXT, "
+                + PICTURE_COL + " BLOB)";
 
         // Timeslots table
         // Holds selected-as-ok timeslots for each event's interested users
@@ -128,16 +130,42 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void uploadProfilePicture(String username, byte[] picture) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(PICTURE_COL, picture);
+
+        db.update(PROFILE_TABLE_NAME,values,"username = '"+username+"'",null);
+    }
+
+    public byte[] getProfilePicture(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        byte[] picture = null;
+        String[] args = {"'" + username + "'"};
+        Cursor cursorProfile = db.rawQuery("SELECT " + PICTURE_COL +
+                        " FROM " + PROFILE_TABLE_NAME +
+                        " WHERE " + USERNAME_COL + " = ?",
+                args);
+        if (cursorProfile.moveToFirst()) {
+
+            picture = cursorProfile.getBlob(1);
+        }
+        cursorProfile.close();
+        return picture;
+    }
+
     // Checks to see if a specified username-password combination is in the profile table
     public Boolean verifyProfile(String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         Boolean validProfile = Boolean.FALSE;
 
+        String[] args = {"'" + username + "'", "'" + password + "'"};
         Cursor cursorProfile = db.rawQuery("SELECT * " +
                         " FROM " + PROFILE_TABLE_NAME +
-                        " WHERE " + USERNAME_COL + "=" + username +
-                        " AND " + PASSWORD_COL + "=" + password,
-                new String[]{"data"});
+                        " WHERE " + USERNAME_COL + "=?" +
+                        " AND " + PASSWORD_COL + "=?",
+               args);
         if (cursorProfile.moveToFirst()) {
             validProfile = Boolean.TRUE;
         }
@@ -155,7 +183,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ArrayList<Event> currentlyHosting = currentlyHostingEvents(username, currentTime);
         ArrayList<Message> messages = getMessages(username);
 
-        return new Profile(username, pastEvents, futureEvents, currentlyHosting, messages);
+        return new Profile(username, null, pastEvents, futureEvents, currentlyHosting, messages);
     }
 
     // Returns Event object

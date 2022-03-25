@@ -2,8 +2,15 @@ package com.example.easyteamup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.Menu;
 
@@ -20,10 +27,12 @@ import androidx.appcompat.app.AppCompatActivity;
 //import com.example.easyteamup.databinding.ActivityMainBinding;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +40,56 @@ public class ProfileActivity extends AppCompatActivity {
 
     private DBHandler dbHandler;
     LinearLayout page;
+    final int SELECT_PICTURE = 1;
+    ImageView profilePic;
+    String username;
+    byte[] picture;
+
+    void selectImage() {
+        // create an instance of the
+        // intent of the type image
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("scale", true);
+        intent.putExtra("outputX", 256);
+        intent.putExtra("outputY", 256);
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("return-data", true);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+        // pass the constant to compare it
+        // with the returned requestCode
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+    }
+
+    // this function is triggered when user
+    // selects the image from the imageChooser
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            // compare the resultCode with the
+            // SELECT_PICTURE constant
+            if (requestCode == SELECT_PICTURE) {
+                // Get the url of the image from data
+                Uri imageUri = data.getData();
+                Bitmap bitmap = null;
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.getContentResolver(), imageUri));
+                    } else {
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    }
+                    profilePic.setImageBitmap(bitmap);
+                    dbHandler.uploadProfilePicture(username, picture);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +105,38 @@ public class ProfileActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            String username = extras.getString("username");
+            username = extras.getString("username");
             TextView usernameText = new TextView(this);
             usernameText.setText("Username: " + username);
             page.addView(usernameText);
 
             Profile prof = dbHandler.getPublicProfile(username);
 
-            // TODO: insert view for profile picture
+            // insert view for profile picture
+            picture = dbHandler.getProfilePicture(username);
+            profilePic = new ImageView(this);
+            page.addView(profilePic);
+            // show profile photo if one has been uploaded
+            if (picture != null) {
+                // show image
+                Bitmap bitmap = BitmapFactory.decodeByteArray(picture, 0, picture.length);
+                profilePic.setImageBitmap(bitmap);
+            }
+            // button to upload profile photo
+            else {
+                Button imageBtn = new Button(this);
+                imageBtn.setText("Upload Profile Picture");
+                imageBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                page.addView(imageBtn);
+
+                imageBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectImage();
+                        page.removeView(imageBtn);
+                    }
+                });
+            }
 
             TextView pastText = new TextView(this);
             pastText.setText("Past Events");
