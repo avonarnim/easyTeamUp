@@ -25,6 +25,7 @@ import android.widget.Toast;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventPageActivity extends AppCompatActivity {
 
@@ -96,87 +97,101 @@ public class EventPageActivity extends AppCompatActivity {
                         // send updated event info to the database
                         dbHandler.updateEventInfo(updatedEvent);
 
-                        // TODO: loop through guest list and send them all messages
-                        dbHandler.addNewMessage(eventInfo.getHost(), eventInfo.getHost(), "Changes have been made to event: " + name);
+                        // loop through guest list and send them all messages
+                        List<String> guestList = dbHandler.getGuestList(eventId);
+                        for(int i = 0; i < guestList.size(); i++) {
+                            dbHandler.addNewMessage(eventInfo.getHost(), guestList.get(i), "Changes have been made to event: " + name);
+                        }
                     }
                 });
             }
-            // TODO: update this function once guestlist is added to database
-//            else if (user is on the guest list) {
-//                TextView eventIdText = new TextView(this);
-//                eventIdText.setText(eventId);
-//                page.addView(eventIdText);
-//
-//                TextView nameText = new TextView(this);
-//                nameText.setText("Event Name: " + eventInfo.getName());
-//                page.addView(nameText);
-//
-//                TextView hostText = new TextView(this);
-//                hostText.setText("Host: " + eventInfo.getHost());
-//                page.addView(hostText);
-//
-//                TextView longitudeText = new TextView(this);
-//                longitudeText.setText("Longitude: " + eventInfo.getLongitude());
-//                page.addView(longitudeText);
-//
-//                TextView latitudeText = new TextView(this);
-//                latitudeText.setText("Latitude: " + eventInfo.getLatitude());
-//                page.addView(latitudeText);
-//
-//                TextView deadlineText = new TextView(this);
-//                deadlineText.setText("Deadline: " + eventInfo.getDeadline());
-//                page.addView(deadlineText);
-//
-//                TextView finalTimeText = new TextView(this);
-//                finalTimeText.setText("Final Time: " + eventInfo.getFinalTime());
-//                page.addView(finalTimeText);
-//
-//                Button withdrawBtn = new Button(this);
-//                withdrawBtn.setText("Save Changes");
-//                withdrawBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-//                page.addView(withdrawBtn);
-//
-//                withdrawBtn.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        // update event guest list and remove this user
-//                        dbHandler.updateEventGuestList(eventId);
-//                        // Send message to host
-//                        dbHandler.addNewMessage(username, eventInfo.getHost(), "User " + username + " has withdrawn from your event " + eventInfo.getName());
-//                    }
-//                });
-//            }
-            else {
+            // user is not the host
+            else if (eventInfo.getHost() != username) {
+                List<String> guestList = dbHandler.getGuestList(eventId);
+                // loop through guest list and see if user is a guest
+                boolean onList = false;
+                for(int i = 0; i < guestList.size(); i++) {
+                    if(guestList.get(i) == username) {
+                        onList = true;
+                    }
+                }
+                // user is on the guest list
+                if (onList) {
+                    TextView eventIdText = new TextView(this);
+                    eventIdText.setText(eventId);
+                    page.addView(eventIdText);
+
+                    TextView nameText = new TextView(this);
+                    nameText.setText("Event Name: " + eventInfo.getName());
+                    page.addView(nameText);
+
+                    TextView hostText = new TextView(this);
+                    hostText.setText("Host: " + eventInfo.getHost());
+                    page.addView(hostText);
+
+                    TextView longitudeText = new TextView(this);
+                    longitudeText.setText("Longitude: " + eventInfo.getLongitude());
+                    page.addView(longitudeText);
+
+                    TextView latitudeText = new TextView(this);
+                    latitudeText.setText("Latitude: " + eventInfo.getLatitude());
+                    page.addView(latitudeText);
+
+                    TextView deadlineText = new TextView(this);
+                    deadlineText.setText("Deadline: " + eventInfo.getDeadline());
+                    page.addView(deadlineText);
+
+                    TextView finalTimeText = new TextView(this);
+                    finalTimeText.setText("Final Time: " + eventInfo.getFinalTime());
+                    page.addView(finalTimeText);
+
+                    Button withdrawBtn = new Button(this);
+                    withdrawBtn.setText("Save Changes");
+                    withdrawBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    page.addView(withdrawBtn);
+
+                    withdrawBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // update event guest list and remove this user
+                            dbHandler.updateEventGuestList(eventId, username);
+                            // Send message to host
+                            dbHandler.addNewMessage(username, eventInfo.getHost(), "User " + username + " has withdrawn from your event " + eventInfo.getName());
+                        }
+                    });
+                }
+
                 // User is not the host and not on guest list so they cannot edit event details (TextView)
-                TextView eventIdText = new TextView(this);
-                eventIdText.setText(eventId);
-                page.addView(eventIdText);
+                else {
+                    TextView eventIdText = new TextView(this);
+                    eventIdText.setText(eventId);
+                    page.addView(eventIdText);
 
-                TextView nameText = new TextView(this);
-                nameText.setText("Event Name: " + eventInfo.getName());
-                page.addView(nameText);
+                    TextView nameText = new TextView(this);
+                    nameText.setText("Event Name: " + eventInfo.getName());
+                    page.addView(nameText);
 
-                TextView hostText = new TextView(this);
-                hostText.setText("Host: " + eventInfo.getHost());
-                page.addView(hostText);
+                    TextView hostText = new TextView(this);
+                    hostText.setText("Host: " + eventInfo.getHost());
+                    page.addView(hostText);
 
-                TextView longitudeText = new TextView(this);
-                longitudeText.setText("Longitude: " + eventInfo.getLongitude());
-                page.addView(longitudeText);
+                    TextView longitudeText = new TextView(this);
+                    longitudeText.setText("Longitude: " + eventInfo.getLongitude());
+                    page.addView(longitudeText);
 
-                TextView latitudeText = new TextView(this);
-                latitudeText.setText("Latitude: " + eventInfo.getLatitude());
-                page.addView(latitudeText);
+                    TextView latitudeText = new TextView(this);
+                    latitudeText.setText("Latitude: " + eventInfo.getLatitude());
+                    page.addView(latitudeText);
 
-                TextView deadlineText = new TextView(this);
-                deadlineText.setText("Deadline: " + eventInfo.getDeadline());
-                page.addView(deadlineText);
+                    TextView deadlineText = new TextView(this);
+                    deadlineText.setText("Deadline: " + eventInfo.getDeadline());
+                    page.addView(deadlineText);
 
-                TextView finalTimeText = new TextView(this);
-                finalTimeText.setText("Final Time: " + eventInfo.getFinalTime());
-                page.addView(finalTimeText);
+                    TextView finalTimeText = new TextView(this);
+                    finalTimeText.setText("Final Time: " + eventInfo.getFinalTime());
+                    page.addView(finalTimeText);
+                }
             }
-
         }
     }
 }
