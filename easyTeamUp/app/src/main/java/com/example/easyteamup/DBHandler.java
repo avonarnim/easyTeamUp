@@ -160,7 +160,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // Returns Event object
     public Event getEventInfo(int eventId) {
-
+        Long time = getDecidedTime(eventId);
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
@@ -172,6 +172,7 @@ public class DBHandler extends SQLiteOpenHelper {
                         cursorEvents.getFloat(5),
                         cursorEvents.getLong(6),
                         cursorEvents.getLong(7));
+
     }
 
     public void updateEventInfo(Event event) {
@@ -235,6 +236,7 @@ public class DBHandler extends SQLiteOpenHelper {
     // Creates ArrayList with those events
     public ArrayList<Event> currentlyHostingEvents(String username, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
+
         String[] args = {"'" + username + "'"};
         Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
                 " WHERE " + EVENT_HOST_COL + " = ?" +
@@ -243,6 +245,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ArrayList<Event> eventsList = new ArrayList<>();
         if (cursorEvents.moveToFirst()) {
             do {
+                Long time = getDecidedTime(cursorEvents.getInt(1));
                 eventsList.add(new Event(cursorEvents.getInt(1),
                         cursorEvents.getString(2),
                         cursorEvents.getString(3),
@@ -275,6 +278,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ArrayList<Event> eventsList = new ArrayList<>();
         if (cursorEvents.moveToFirst()) {
             do {
+                Long time = getDecidedTime(cursorEvents.getInt(1));
                 eventsList.add(new Event(cursorEvents.getInt(1),
                     cursorEvents.getString(2),
                     cursorEvents.getString(3),
@@ -305,6 +309,7 @@ public class DBHandler extends SQLiteOpenHelper {
         if(cursorEvents != null) {
             if (cursorEvents.moveToFirst()) {
                 do {
+                    Long time = getDecidedTime(cursorEvents.getInt(1));
                     eventsList.add(new Event(cursorEvents.getInt(1),
                             cursorEvents.getString(2),
                             cursorEvents.getString(3),
@@ -382,7 +387,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // Finds the most commonly-selected timeslot for an event
-    public Long decideOnTime(String eventId) {
+    public Long decideOnTime(int eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursorTimeslots = db.rawQuery("SELECT " + SELECTED_TIME_COL + ", COUNT(" + SELECTED_TIME_COL + ") FROM " + TIMESLOTS_TABLE_NAME +
                         " WHERE " + TIMESLOTS_TABLE_NAME + "." + EVENT_ID_COL + "=" + EVENT_TABLE_NAME + "." + EVENT_ID_COL,
@@ -407,7 +412,7 @@ public class DBHandler extends SQLiteOpenHelper {
     // if deadline has passed, get time of event
     // if deadline has passed, call decideOnTime and update Event record with the decided time
     // return time if possible
-    public Long getDecidedTime(String eventId) {
+    public Long getDecidedTime(int eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         Event selectedEvent;
