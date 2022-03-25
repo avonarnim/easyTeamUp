@@ -319,6 +319,30 @@ public class DBHandler extends SQLiteOpenHelper {
         return eventsList;
     }
 
+    // return a guest list (users who selected a time slot) for an event
+    public ArrayList<String> getGuestList(int eventId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursorEvents = db.rawQuery("SELECT " + USERNAME_COL + " FROM " + TIMESLOTS_TABLE_NAME +
+                        " WHERE " + EVENT_ID_COL + "=" + eventId,
+                new String[]{"data"});
+
+        ArrayList<String> guestList = new ArrayList<>();
+        if(cursorEvents != null) {
+            if (cursorEvents.moveToFirst()) {
+                do {
+                    guestList.add(cursorEvents.getString(1));
+                } while (cursorEvents.moveToNext());
+            }
+            cursorEvents.close();
+        }
+        return guestList;
+    }
+
+    public void updateEventGuestList(int eventId, String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TIMESLOTS_TABLE_NAME,EVENT_ID_COL + "=? AND " + USERNAME_COL + "=?", new String[]{String.valueOf(eventId), username});
+    }
+
     // Returns a user's messages
     public ArrayList<Message> getMessages(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
