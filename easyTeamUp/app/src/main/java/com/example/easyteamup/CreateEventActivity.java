@@ -19,7 +19,7 @@ import android.widget.Toast;
 public class CreateEventActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-//    private ActivityMainBinding binding;
+    private String username;
     private EditText eventNameEdt, eventHostEdt, eventLatEdt, eventLongEdt, eventDeadlineEdt;
     private Button addEventBtn, profileBtn, viewEventButton;
     private DBHandler dbHandler;
@@ -27,6 +27,11 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            username = extras.getString("username");
+        }
 
         // initializing all our variables.
         eventNameEdt = findViewById(R.id.idEdtEventName);
@@ -46,6 +51,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CreateEventActivity.this, MapsActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });
@@ -54,6 +60,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });

@@ -6,20 +6,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.easyteamup.databinding.ActivityMapsBinding;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private String username;
     private GoogleMap mMap;
+    private LatLngBounds currentCameraBounds;
     private ActivityMapsBinding binding;
     private Button createEventBtn, profileBtn;
+    private HashMap<Integer, LatLng> locations;
+    private HashMap<Integer, String> eventNames;
+    private DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +41,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            username = extras.getString("username");
+        }
+
+        locations = new HashMap<Integer, LatLng>();
+        eventNames = new HashMap<Integer, String>();
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        createEventBtn =findViewById(R.id.idBtnMapToCreateEvent);
+        createEventBtn = findViewById(R.id.idBtnMapToCreateEvent);
         profileBtn = findViewById(R.id.idBtnMapToProfile);
 
         createEventBtn.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +72,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(intent);
             }
         });
+
+        dbHandler = new DBHandler(MapsActivity.this);
     }
 
     /**
@@ -66,9 +89,53 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+                if (currentCameraBounds.northeast.latitude == bounds.northeast.latitude
+                        && currentCameraBounds.northeast.longitude == bounds.northeast.longitude
+                        && currentCameraBounds.southwest.latitude == bounds.southwest.latitude
+                        && currentCameraBounds.southwest.longitude == bounds.southwest.longitude) {
+                    return;
+                }
+
+                currentCameraBounds = bounds;
+
+                ArrayList<Event> events = dbHandler.getEventsInArea(bounds.northeast.latitude, bounds.northeast.longitude,
+                        bounds.southwest.latitude, bounds.southwest.longitude, System.currentTimeMillis());
+                for (Event event : events) {
+                    locations.put(event.getId(), new LatLng(event.getLatitude(), event.getLongitude()));
+                    eventNames.put(event.getId(), event.getName());
+                }
+
+                Iterator locIt = locations.entrySet().iterator();
+                while (locIt.hasNext()) {
+                    Map.Entry mapElement = (Map.Entry) locIt.next();
+                    LatLng loc = ((LatLng)mapElement.getValue());
+                    String eventName = ((String)eventNames.get(mapElement.getKey()));
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                            .position(loc)
+                            .title(eventName));
+                    marker.setTag((String)mapElement.getKey());
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+                }
+            }
+        });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String eventName = marker.getTitle();
+                Integer eventId = (Integer) marker.getTag();
+                Intent intent = new Intent(MapsActivity.this, EventPageActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("eventId", eventId);
+                intent.putExtra("eventName", eventName);
+                startActivity(intent);
+                return false;
+            }
+
+        });
     }
 }

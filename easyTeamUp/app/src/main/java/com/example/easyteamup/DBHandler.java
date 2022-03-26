@@ -200,7 +200,6 @@ public class DBHandler extends SQLiteOpenHelper {
                         cursorEvents.getFloat(5),
                         cursorEvents.getLong(6),
                         cursorEvents.getLong(7));
-
     }
 
     public void updateEventInfo(Event event) {
@@ -332,6 +331,39 @@ public class DBHandler extends SQLiteOpenHelper {
                         " AND " + EVENT_TABLE_NAME + "." + EVENT_ID_COL + " = " + TIMESLOTS_TABLE_NAME + "." + EVENT_ID_COL +
                         " AND " + TIMESLOTS_TABLE_NAME + "." + USERNAME_COL + " =?",
                 args);
+
+        ArrayList<Event> eventsList = new ArrayList<>();
+        if(cursorEvents != null) {
+            if (cursorEvents.moveToFirst()) {
+                do {
+                    Long time = getDecidedTime(cursorEvents.getInt(1));
+                    eventsList.add(new Event(cursorEvents.getInt(1),
+                            cursorEvents.getString(2),
+                            cursorEvents.getString(3),
+                            cursorEvents.getFloat(4),
+                            cursorEvents.getFloat(5),
+                            cursorEvents.getLong(6),
+                            cursorEvents.getLong(7)));
+                } while (cursorEvents.moveToNext());
+            }
+            cursorEvents.close();
+        }
+        return eventsList;
+    }
+
+    public ArrayList<Event> getEventsInArea(Double rightUpperLat, Double rightUpperLong,
+                                         Double leftLowerLat, Double leftLowerLong, Long currentTime) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
+            " WHERE ((" + FINAL_TIME_COL + " IS NOT NULL" +
+                " AND " + FINAL_TIME_COL + " > " + currentTime + ")" +
+                " OR " + FINAL_TIME_COL + " IS NULL)" +
+            " AND " + LATITUDE_COL + ">" + leftLowerLat +
+            " AND " + LATITUDE_COL + "<" + rightUpperLat +
+            " AND " + LONGITUDE_COL + "<" + leftLowerLong +
+            " AND " + LONGITUDE_COL + ">" + rightUpperLong
+            , new String[]{"data"});
 
         ArrayList<Event> eventsList = new ArrayList<>();
         if(cursorEvents != null) {
