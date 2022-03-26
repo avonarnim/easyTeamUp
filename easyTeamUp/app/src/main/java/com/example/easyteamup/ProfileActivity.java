@@ -223,6 +223,30 @@ public class ProfileActivity extends AppCompatActivity {
                 textView.setText("FROM: " + messages.get(i).getSender() + "\n" + messages.get(i).getBody());
                 page.addView(textView);
             }
+
+            TextView createEvent = new TextView(this);
+            createEvent.setText("Create Event");
+            createEvent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfileActivity.this, CreateEventActivity.class);
+                    intent.putExtra("username", username);
+                    startActivity(intent);
+                }
+            });
+            page.addView(createEvent);
+
+            TextView viewMaps = new TextView(this);
+            viewMaps.setText("View Map");
+            viewMaps.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfileActivity.this, MapsActivity.class);
+                    intent.putExtra("username", username);
+                    startActivity(intent);
+                }
+            });
+            page.addView(viewMaps);
         }
     }
 }
