@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 //import com.example.easyteamup.databinding.ActivityMainBinding;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -100,6 +101,19 @@ public class CreateEventActivity extends AppCompatActivity {
                 eventDeadlineEdt.setText("");
             }
         });
+    }
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_public:
+                if (checked)
+                    break;
+            case R.id.radio_private:
+                if (checked)
+                    break;
+        }
     }
 
     @Override
