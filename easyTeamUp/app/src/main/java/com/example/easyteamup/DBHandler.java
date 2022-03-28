@@ -214,11 +214,6 @@ public class DBHandler extends SQLiteOpenHelper {
         db.update(EVENT_TABLE_NAME,values,"eventId = '"+event.getId()+"'",null);
     }
 
-    // TODO: updateEventGuestList
-//    public void updateEventGuestList(int eventId) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//    }
-
     // Inserts a new availability into Timeslot table
     // NOTE: could change to pass in a list of selected times, and then just perform multiple inserts here
     public void addNewTimeslot(Integer eventId, Integer profileId, Long selectedTime) {

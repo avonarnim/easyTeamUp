@@ -99,6 +99,9 @@ public class ProfileActivity extends AppCompatActivity {
         dbHandler = new DBHandler(ProfileActivity.this);
         page = findViewById(R.id.linearLayout);
 
+        //TODO: remove
+        //dbHandler.addNewEvent("event", "test", 128.6, 128.6, 5000L);
+
         TextView titleText = new TextView(this);
         titleText.setText("Your Profile");
         page.addView(titleText);
