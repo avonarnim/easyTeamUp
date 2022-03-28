@@ -7,12 +7,13 @@ public class Event {
     private int id;
     private String name;
     private String host;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
     private Long deadline;
     private Long finalTime;
 
-    public Event(int id, String name, String host, float latitude, float longitude, Long deadline, Long finalTime) {
+    public Event(int id, String name, String host, double latitude, double longitude, Long deadline, Long finalTime) {
+        this.id = id;
         this.name = name;
         this.host = host;
         this.latitude = latitude;
@@ -43,7 +44,7 @@ public class Event {
         this.host = h;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
@@ -51,7 +52,7 @@ public class Event {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
