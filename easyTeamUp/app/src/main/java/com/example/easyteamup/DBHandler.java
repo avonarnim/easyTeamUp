@@ -103,7 +103,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // Inserts a new event into the Event table
-    public void addNewEvent(String eventName, String eventHost, Double latitude, Double longitude, Long deadline) {
+    public int addNewEvent(String eventName, String eventHost, Double latitude, Double longitude, Long deadline) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -115,8 +115,12 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(DEADLINE_COL, deadline);
 
         db.insert(EVENT_TABLE_NAME, null, values);
+        Cursor cursorID = db.rawQuery("SELECT LAST_INSERT_ID()", new String[]{"data"}); //is this allowed be its WritableDB??
+        int eventId = cursorID.getInt(1);
         db.close();
+        return eventId;
     }
+
 
     // Inserts a new user profile into the Profile table
     public void addNewProfile(String username, String password) {
@@ -223,13 +227,14 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // Inserts a new availability into Timeslot table
     // NOTE: could change to pass in a list of selected times, and then just perform multiple inserts here
-    public void addNewTimeslot(Integer eventId, Integer profileId, Long selectedTime) {
+    //edited to take
+    public void addNewTimeslot(Integer eventId, String profile, Long selectedTime) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(EVENT_ID_COL, eventId);
-        values.put(USERNAME_COL, profileId);
+        values.put(USERNAME_COL, profile);
         values.put(SELECTED_TIME_COL, selectedTime);
 
         db.insert(TIMESLOTS_TABLE_NAME, null, values);

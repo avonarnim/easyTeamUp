@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".CreateEventActivity">
-
-    <!--Edit text to enter course name-->
+    <Button
+        android:id="@+id/idBtnCreateToViewEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="View Events"
+        android:textAllCaps="false" />
+    <!--button for switching to map page-->
+    <Button
+        android:id="@+id/idBtnCreateToProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="View Profile"
+        android:textAllCaps="false" />
+    <TextView
+        android:id="@+id/eventMake_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Event"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    <!--Edit text to enter event name-->
     <EditText
         android:id="@+id/idEdtEventName"
         android:layout_width="match_parent"
@@ -15,13 +39,16 @@
         android:layout_margin="10dp"
         android:hint="Enter Event Name" />
 
-    <!--edit text to enter course duration-->
-    <EditText
-        android:id="@+id/idEdtEventHost"
-        android:layout_width="match_parent"
+    <RadioButton android:id="@+id/radio_public"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:hint="Enter Host ID" />
+        android:text="Public Event"
+        />
+    <RadioButton android:id="@+id/radio_private"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Private Event"
+        />
 
     <!--edit text to display course tracks-->
     <EditText
@@ -38,24 +65,87 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:hint="Enter Event Longitude" />
-
+    <TextView
+        android:id="@+id/deadline_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Deadline Selection"
+        android:textSize="20sp"
+        android:textStyle="bold" />
     <!--edit text for course description-->
     <EditText
-        android:id="@+id/idEdtDeadline"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:hint="Enter Sign-Up Deadline" />
-    <RadioButton android:id="@+id/radio_public"
+        android:id="@+id/dl_in_date"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Public Event"
-        android:onClick="onRadioButtonClicked"/>
-    <RadioButton android:id="@+id/radio_private"
+        android:text="SELECT DATE"
+        android:id="@+id/dl_btn_date"
+        android:layout_alignBottom="@+id/dl_in_date"
+        android:layout_toRightOf="@+id/dl_in_date"
+        android:layout_toEndOf="@+id/dl_in_date" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/dl_in_time"
+        android:layout_below="@+id/dl_in_date"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Private Event"
-        android:onClick="onRadioButtonClicked"/>
+        android:text="SELECT TIME"
+        android:id="@+id/dl_btn_time"
+        android:layout_below="@+id/dl_btn_date"
+        android:layout_alignLeft="@+id/dl_btn_date"
+        android:layout_alignStart="@+id/dl_btn_date" />
+    <TextView
+        android:id="@+id/ts1_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timeslot 1 Selection"
+        android:textSize="20sp" />
+    <!--edit text for course description-->
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_dateTS1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SELECT DATE"
+        android:id="@+id/btn_dateTS1"
+        android:layout_alignBottom="@+id/in_dateTS1"
+        android:layout_toRightOf="@+id/in_dateTS1"
+        android:layout_toEndOf="@+id/in_dateTS1" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_timeTS1"
+        android:layout_below="@+id/in_dateTS1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SELECT TIME"
+        android:id="@+id/btn_timeTS1"
+        android:layout_below="@+id/btn_dateTS1"
+        android:layout_alignLeft="@+id/btn_dateTS1"
+        android:layout_alignStart="@+id/btn_dateTS1" />
     <!--button for adding new course-->
     <Button
         android:id="@+id/idBtnCreateEvent"
@@ -66,21 +156,7 @@
         android:textAllCaps="false" />
 
     <!--button for switching to map page-->
-    <Button
-        android:id="@+id/idBtnCreateToViewEvent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="View Events"
-        android:textAllCaps="false" />
 
-    <!--button for switching to map page-->
-    <Button
-        android:id="@+id/idBtnCreateToProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="View Profile"
-        android:textAllCaps="false" />
 
 </LinearLayout>
+</ScrollView>
