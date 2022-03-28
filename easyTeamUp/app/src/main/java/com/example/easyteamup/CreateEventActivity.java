@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 //import com.example.easyteamup.databinding.ActivityMainBinding;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -92,14 +93,32 @@ public class CreateEventActivity extends AppCompatActivity {
                 dbHandler.addNewEvent(eventName, eventHost, eventLat, eventLong, eventDeadlineLong);
 
                 // after adding the data we are displaying a toast message.
-                Toast.makeText(CreateEventActivity.this, "Course has been added.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateEventActivity.this, "Event has been added.", Toast.LENGTH_SHORT).show();
                 eventNameEdt.setText("");
                 eventHostEdt.setText("");
                 eventLatEdt.setText("");
                 eventLongEdt.setText("");
                 eventDeadlineEdt.setText("");
+
+                Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
             }
         });
+    }
+
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_public:
+                if (checked)
+                    break;
+            case R.id.radio_private:
+                if (checked)
+                    break;
+        }
     }
 
     @Override
