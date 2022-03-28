@@ -73,8 +73,6 @@ public class DBHandler extends SQLiteOpenHelper {
                 + FINAL_TIME_COL + " INTEGER)";
 
         // Profile table
-        // TODO: add jpg profile pictures in form of BLOB
-        // https://stackoverflow.com/questions/51301395/how-to-store-a-jpg-in-an-sqlite-database-with-python
         String createProfiles = "CREATE TABLE IF NOT EXISTS " + PROFILE_TABLE_NAME + " ("
                 + PROFILE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + USERNAME_COL + " TEXT, "
@@ -356,8 +354,6 @@ public class DBHandler extends SQLiteOpenHelper {
                                          Double leftLowerLat, Double leftLowerLong, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Log.i("", "DBHANDLER -- got " + rightUpperLat + " " + rightUpperLong);
-
         String[] args = {"'" + currentTime + "'",
                 "'" + leftLowerLat + "'",
                 "'" + rightUpperLat + "'",
@@ -371,9 +367,7 @@ public class DBHandler extends SQLiteOpenHelper {
             " AND " + LATITUDE_COL + "< ?" +
             " AND " + LONGITUDE_COL + "< ?" +
             " AND " + LONGITUDE_COL + "> ?"
-            , new String[]{"data"});
-
-        Log.i("", "DBHANDLER -- performed query ");
+            , args);
 
         ArrayList<Event> eventsList = new ArrayList<>();
         if(cursorEvents != null) {
@@ -391,7 +385,6 @@ public class DBHandler extends SQLiteOpenHelper {
             }
             cursorEvents.close();
         }
-        Log.i("", "DBHANDLER -- returning " + eventsList);
 
         return eventsList;
     }
