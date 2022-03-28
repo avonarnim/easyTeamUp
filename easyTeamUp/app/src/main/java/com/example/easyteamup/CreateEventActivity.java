@@ -120,20 +120,6 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.radio_public:
-                if (checked)
-                    break;
-            case R.id.radio_private:
-                if (checked)
-                    break;
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
