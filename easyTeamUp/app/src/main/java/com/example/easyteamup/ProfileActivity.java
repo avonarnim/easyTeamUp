@@ -247,6 +247,17 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
             page.addView(viewMaps);
+
+            TextView signOut = new TextView(this);
+            signOut.setText("Sign Out");
+            signOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfileActivity.this, SignUpActivity.class);
+                    startActivity(intent);
+                }
+            });
+            page.addView(signOut);
         }
     }
 }
