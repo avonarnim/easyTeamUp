@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import android.util.Log;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -355,15 +356,24 @@ public class DBHandler extends SQLiteOpenHelper {
                                          Double leftLowerLat, Double leftLowerLong, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
 
+        Log.i("", "DBHANDLER -- got " + rightUpperLat + " " + rightUpperLong);
+
+        String[] args = {"'" + currentTime + "'",
+                "'" + leftLowerLat + "'",
+                "'" + rightUpperLat + "'",
+                "'" + leftLowerLong + "'",
+                "'" + rightUpperLong + "'"};
         Cursor cursorEvents = db.rawQuery("SELECT * FROM " + EVENT_TABLE_NAME +
             " WHERE ((" + FINAL_TIME_COL + " IS NOT NULL" +
-                " AND " + FINAL_TIME_COL + " > " + currentTime + ")" +
+                " AND " + FINAL_TIME_COL + " > ? )" +
                 " OR " + FINAL_TIME_COL + " IS NULL)" +
-            " AND " + LATITUDE_COL + ">" + leftLowerLat +
-            " AND " + LATITUDE_COL + "<" + rightUpperLat +
-            " AND " + LONGITUDE_COL + "<" + leftLowerLong +
-            " AND " + LONGITUDE_COL + ">" + rightUpperLong
+            " AND " + LATITUDE_COL + "> ?" +
+            " AND " + LATITUDE_COL + "< ?" +
+            " AND " + LONGITUDE_COL + "< ?" +
+            " AND " + LONGITUDE_COL + "> ?"
             , new String[]{"data"});
+
+        Log.i("", "DBHANDLER -- performed query ");
 
         ArrayList<Event> eventsList = new ArrayList<>();
         if(cursorEvents != null) {
@@ -381,6 +391,8 @@ public class DBHandler extends SQLiteOpenHelper {
             }
             cursorEvents.close();
         }
+        Log.i("", "DBHANDLER -- returning " + eventsList);
+
         return eventsList;
     }
 
