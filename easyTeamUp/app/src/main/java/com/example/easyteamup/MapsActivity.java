@@ -61,6 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MapsActivity.this, CreateEventActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });
@@ -69,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MapsActivity.this, ProfileActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });
