@@ -106,6 +106,19 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
     }
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_public:
+                if (checked)
+                    break;
+            case R.id.radio_private:
+                if (checked)
+                    break;
+        }
+    }
 
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
