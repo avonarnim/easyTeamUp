@@ -16,7 +16,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
 
     // below int is our database version
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
 
     // variables are for table names.
     private static final String EVENT_TABLE_NAME = "events";
@@ -82,7 +82,7 @@ public class DBHandler extends SQLiteOpenHelper {
         // Timeslots table
         // Holds selected-as-ok timeslots for each event's interested users
         String createTimeslots = "CREATE TABLE IF NOT EXISTS " + TIMESLOTS_TABLE_NAME + " ("
-                + EVENT_ID_COL + " INTEGER PRIMARY KEY, "
+                + EVENT_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + USERNAME_COL + " TEXT,"
                 + SELECTED_TIME_COL + " INTEGER)";
 
