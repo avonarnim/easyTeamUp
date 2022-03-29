@@ -222,6 +222,10 @@ public class CreateEventActivity extends AppCompatActivity {
                 timeTxtDL.setText("");
                 dateTxtTS1.setText("");
                 timeTxtTS1.setText("");
+
+                Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
+                intent.putExtra("username",username);
+                startActivity(intent);
             }
         });
     }
