@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 
@@ -47,13 +48,14 @@ public class EventPageActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             int eventId = extras.getInt("eventId");
+            Log.v("eventId inside event page", String.valueOf(eventId));
             String username = extras.getString("username");
             Event eventInfo = dbHandler.getEventInfo(eventId);
 
             // if user is the host of this event AND event deadline has not passed, they are able to edit (EditText) the event
             if((eventInfo.getHost() == username) && (eventInfo.getDeadline() < System.currentTimeMillis())) {
                 EditText eventIdText = new EditText(this);
-                eventIdText.setText(eventId);
+                eventIdText.setText(String.valueOf(eventId));
                 page.addView(eventIdText);
 
                 TextView hostText = new TextView(this);
@@ -118,7 +120,7 @@ public class EventPageActivity extends AppCompatActivity {
                 // user is on the guest list
                 if (onList) {
                     TextView eventIdText = new TextView(this);
-                    eventIdText.setText(eventId);
+                    eventIdText.setText(String.valueOf(eventId));
                     page.addView(eventIdText);
 
                     TextView nameText = new TextView(this);
@@ -164,7 +166,9 @@ public class EventPageActivity extends AppCompatActivity {
                 // User is not the host and not on guest list so they cannot edit event details (TextView)
                 else {
                     TextView eventIdText = new TextView(this);
-                    eventIdText.setText(eventId);
+                    Log.d("event id error spot", String.valueOf(eventId));
+                    eventIdText.setText(String.valueOf(eventId));
+                    Log.d("event id after", String.valueOf(eventId));
                     page.addView(eventIdText);
 
                     TextView nameText = new TextView(this);

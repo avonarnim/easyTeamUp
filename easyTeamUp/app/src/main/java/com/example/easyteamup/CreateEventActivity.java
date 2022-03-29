@@ -212,7 +212,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 // on below line we are calling a method to add new
                 // course to sqlite data and pass all our values to it.
                 int id = dbHandler.addNewEvent(eventName, eventHost, eventLat, eventLong, eventDeadlineLong);
-                dbHandler.addNewTimeslot(id, eventHost, timeSlot1Long); //getting event ID once its made
+//                dbHandler.addNewTimeslot(id, eventHost, timeSlot1Long); //getting event ID once its made
                 // after adding the data we are displaying a toast message.
                 Toast.makeText(CreateEventActivity.this, "Event has been added.", Toast.LENGTH_SHORT).show();
                 eventNameEdt.setText("");
