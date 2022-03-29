@@ -17,7 +17,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
 
     // below int is our database version
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 6;
 
     // variables are for table names.
     private static final String EVENT_TABLE_NAME = "events";
@@ -114,11 +114,11 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(LONGITUDE_COL, longitude);
         values.put(DEADLINE_COL, deadline);
 
-        db.insert(EVENT_TABLE_NAME, null, values);
-        Cursor cursorID = db.rawQuery("SELECT eventId FROM events WHERE eventName=?", args);
-        int eventId = cursorID.getPosition();
+        //db.insert(EVENT_TABLE_NAME, null, values);
+        Long rowID = db.insert(EVENT_TABLE_NAME, null, values);
+        Log.d("rowID", String.valueOf(rowID));
         db.close();
-        return eventId;
+        return rowID.intValue();
     }
 
 
@@ -160,19 +160,20 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // Checks to see if a specified username-password combination is in the profile table
     public Boolean verifyProfile(String username, String password) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Boolean validProfile = Boolean.FALSE;
+        // Checks to see if a specified username-password combination is in the profile table
+            SQLiteDatabase db = this.getWritableDatabase();
+            Boolean validProfile = Boolean.FALSE;
+            String query = "SELECT * FROM profiles WHERE username=\"" + username + "\" AND password=\"" + password + "\"";
 
-        String[] args = {"'" + username + "'", "'" + password + "'"};
-        Cursor cursorProfile = db.rawQuery("SELECT * FROM profiles WHERE username=? AND password=?",
-               args);
-        if (cursorProfile.moveToFirst()) {
-            validProfile = Boolean.TRUE;
+            Cursor cursorProfile = db.rawQuery(query,
+                    null);
+            if (cursorProfile.moveToFirst()) {
+                validProfile = Boolean.TRUE;
+            }
+            cursorProfile.close();
+            Log.i("login", String.valueOf(validProfile));
+            return validProfile;
         }
-        cursorProfile.close();
-        Log.d("login", String.valueOf(validProfile));
-        return validProfile;
-    }
 
     // Returns a specified user's profile
     // Wraps calls to get past events, upcoming events, and messages
@@ -190,7 +191,7 @@ public class DBHandler extends SQLiteOpenHelper {
     // Returns Event object
     @SuppressLint("Range")
     public Event getEventInfo(int eventId) {
-        Long time = getDecidedTime(eventId);
+        //Long time = getDecidedTime(eventId);
         Log.v("eventId", String.valueOf(eventId));
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -231,7 +232,7 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(EVENT_ID_COL, eventId);
+        //values.put(EVENT_ID_COL, eventId);
         values.put(USERNAME_COL, profile);
         values.put(SELECTED_TIME_COL, selectedTime);
 
@@ -270,12 +271,12 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String[] args = {"'" + username + "'", String.valueOf(currentTime)};
-        Cursor cursorEvents = db.rawQuery("SELECT * FROM events WHERE eventHost=? AND (finalTime IS NULL OR finalTime > ?)",
-                args);
+        String query = "SELECT * FROM events WHERE eventHost=\"" + username + "\" AND (finalTime IS NULL OR finalTime > \"" + currentTime + "\")";
+        Cursor cursorEvents = db.rawQuery(query, null);
         ArrayList<Event> eventsList = new ArrayList<>();
         if (cursorEvents.moveToFirst()) {
             do {
-                Long time = getDecidedTime(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)));
+                //Long time = getDecidedTime(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)));
                 eventsList.add(new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
                         cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
                         cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
@@ -297,25 +298,24 @@ public class DBHandler extends SQLiteOpenHelper {
     public ArrayList<Event> futureEvents(String username, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] args = {"'" + username + "'"};
-        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + "events" + ", " + "timeslots" +
-                    " WHERE ((" + "events" + "." + "finalTime" + " IS NOT NULL" +
-                    " AND " + "events" + "." + "finalTime" + " > " + currentTime + ")" +
-                    " OR " + "events" + "." + "finalTime" + " IS NULL)" +
-                    " AND " + "events" + "." + "eventId" + " = " + "timeslots" + "." + "eventId" +
-                    " AND " + "timeslots" + "." + "username" + " = ?",
-                args);
+        String query = "SELECT * FROM events, timeslots" +
+                " WHERE ((events.finalTime IS NOT NULL AND events.finalTime > " + currentTime + ")" +
+                " OR (events.finalTime IS NULL AND events.deadline > " + currentTime + "))" +
+                " AND events.eventId = timeslots.eventId" +
+                " AND timeslots.username = \"" + username + "\"";
+        Cursor cursorEvents = db.rawQuery(query, null);
 
         ArrayList<Event> eventsList = new ArrayList<>();
         if (cursorEvents.moveToFirst()) {
             do {
-                Long time = getDecidedTime(cursorEvents.getInt(1));
+                //Long time = getDecidedTime(cursorEvents.getInt(1));
                 eventsList.add(new Event(cursorEvents.getInt(1),
-                    cursorEvents.getString(2),
-                    cursorEvents.getString(3),
-                    cursorEvents.getFloat(4),
-                    cursorEvents.getFloat(5),
-                    cursorEvents.getLong(6),
-                    cursorEvents.getLong(7)));
+                        cursorEvents.getString(2),
+                        cursorEvents.getString(3),
+                        cursorEvents.getFloat(4),
+                        cursorEvents.getFloat(5),
+                        cursorEvents.getLong(6),
+                        cursorEvents.getLong(7)));
             } while (cursorEvents.moveToNext());
         }
         cursorEvents.close();
@@ -327,19 +327,18 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] args = {"'" + username + "'"};
 
-        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + "events" + ", " + "timeslots" +
-                        " WHERE ((" + "events" + "." + "finalTime" + " IS NOT NULL" +
-                        " AND " + "events" + "." + "finalTime" + " < " + currentTime + ")" +
-                        " OR " + "events" + "." + "finalTime" + " IS NULL)" +
-                        " AND " + "events" + "." + "eventId" + " = " + "timeslots" + "." + "eventId" +
-                        " AND " + "timeslots" + "." + "username" + " =?",
-                args);
+        String query = "SELECT * FROM events, timeslots " +
+                "WHERE ((events.finalTime IS NOT NULL AND events.finalTime < " + currentTime + ")" +
+                " OR (events.finalTime IS NULL AND events.deadline < " + currentTime + "))" +
+                " AND events.eventId = timeslots.eventId" +
+                " AND timeslots.username = \"" + username + "\"";
+        Cursor cursorEvents = db.rawQuery(query, null);
 
         ArrayList<Event> eventsList = new ArrayList<>();
         if(cursorEvents != null) {
             if (cursorEvents.moveToFirst()) {
                 do {
-                    Long time = getDecidedTime(cursorEvents.getInt(1));
+                    //Long time = getDecidedTime(cursorEvents.getInt(1));
                     eventsList.add(new Event(cursorEvents.getInt(1),
                             cursorEvents.getString(2),
                             cursorEvents.getString(3),
@@ -356,6 +355,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public ArrayList<Event> getEventsInArea(Double rightUpperLat, Double rightUpperLong,
                                          Double leftLowerLat, Double leftLowerLong, Long currentTime) {
+        //getEventsInArea
         SQLiteDatabase db = this.getReadableDatabase();
 
         String[] args = {"'" + currentTime + "'",
@@ -363,15 +363,13 @@ public class DBHandler extends SQLiteOpenHelper {
                 "'" + rightUpperLat + "'",
                 "'" + leftLowerLong + "'",
                 "'" + rightUpperLong + "'"};
-        Cursor cursorEvents = db.rawQuery("SELECT * FROM " + "events" +
-            " WHERE ((" + "finalTime" + " IS NOT NULL" +
-                " AND " + "finalTime" + " > ? )" +
-                " OR " + "finalTime" + " IS NULL)" +
-            " AND " + "latitude" + "> ?" +
-            " AND " + "latitude" + "< ?" +
-            " AND " + "longitude" + "< ?" +
-            " AND " + "longitude" + "> ?"
-            , args);
+        String query = "SELECT * FROM events WHERE ((finalTime IS NOT NULL" +
+                " AND finalTime >\"" + currentTime + "\")" +
+                " OR finalTime IS NULL)" +
+                " AND latitude >\"" +  leftLowerLat + "\"AND " + "latitude <\"" + rightUpperLat +
+                " AND " + "longitude <\"" + leftLowerLong +
+                " AND " + "longitude >\"" + rightUpperLong + "\"";
+        Cursor cursorEvents = db.rawQuery(query, null);
 
         Log.i("", "DBHANDLER -- performed query ");
 
@@ -379,7 +377,7 @@ public class DBHandler extends SQLiteOpenHelper {
         if(cursorEvents != null) {
             if (cursorEvents.moveToFirst()) {
                 do {
-                    Long time = getDecidedTime(cursorEvents.getInt(1));
+                    //Long time = getDecidedTime(cursorEvents.getInt(1));
                     eventsList.add(new Event(cursorEvents.getInt(1),
                             cursorEvents.getString(2),
                             cursorEvents.getString(3),
@@ -396,6 +394,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // return a guest list (users who selected a time slot) for an event
+    @SuppressLint("Range")
     public ArrayList<String> getGuestList(int eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] args = {String.valueOf(eventId)};
@@ -406,7 +405,7 @@ public class DBHandler extends SQLiteOpenHelper {
         if(cursorEvents != null) {
             if (cursorEvents.moveToFirst()) {
                 do {
-                    guestList.add(cursorEvents.getString(1));
+                    guestList.add(cursorEvents.getString(cursorEvents.getColumnIndex("username")));
                 } while (cursorEvents.moveToNext());
             }
             cursorEvents.close();
@@ -423,9 +422,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public ArrayList<Message> getMessages(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] args = {"'" + username + "'"};
-        Cursor cursorMessages = db.rawQuery("SELECT * FROM " + "messages" +
-                " WHERE " + "recipient" + " = ?",
-                args);
+        String query = "SELECT * FROM messages WHERE recipient=\"" + username + "\"";
+        Cursor cursorMessages = db.rawQuery(query, null);
         ArrayList<Message> messageList = new ArrayList<>();
         if (cursorMessages.moveToFirst()) {
             do {
@@ -487,7 +485,7 @@ public class DBHandler extends SQLiteOpenHelper {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         Event selectedEvent;
         String[] args = {String.valueOf(eventId)};
-        Cursor cursorEvents = db.rawQuery("SELECT deadline, finalTime FROM events WHERE eventId = ?",
+        Cursor cursorEvents = db.rawQuery("SELECT * FROM events WHERE eventId = ?",
                 args);
         if (cursorEvents.moveToFirst()) {
             selectedEvent = new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
