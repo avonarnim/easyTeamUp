@@ -147,6 +147,93 @@
         android:layout_alignLeft="@+id/btn_dateTS1"
         android:layout_alignStart="@+id/btn_dateTS1" />
     <!--button for adding new course-->
+    <TextView
+        android:id="@+id/ts2_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timeslot 2 Selection"
+        android:textSize="20sp" />
+    <!--edit text for course description-->
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_dateTS2"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SELECT DATE"
+        android:id="@+id/btn_dateTS2"
+        android:layout_alignBottom="@+id/in_dateTS2"
+        android:layout_toRightOf="@+id/in_dateTS2"
+        android:layout_toEndOf="@+id/in_dateTS2" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_timeTS2"
+        android:layout_below="@+id/in_dateTS2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SELECT TIME"
+        android:id="@+id/btn_timeTS2"
+        android:layout_below="@+id/btn_dateTS2"
+        android:layout_alignLeft="@+id/btn_dateTS2"
+        android:layout_alignStart="@+id/btn_dateTS2" />
+    <TextView
+        android:id="@+id/ts3_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timeslot 3 Selection"
+        android:textSize="20sp" />
+    <!--edit text for course description-->
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_dateTS3"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SELECT DATE"
+        android:id="@+id/btn_dateTS3"
+        android:layout_alignBottom="@+id/in_dateTS3"
+        android:layout_toRightOf="@+id/in_dateTS3"
+        android:layout_toEndOf="@+id/in_dateTS3" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_timeTS3"
+        android:layout_below="@+id/in_dateTS3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SELECT TIME"
+        android:id="@+id/btn_timeTS3"
+        android:layout_below="@+id/btn_dateTS2"
+        android:layout_alignLeft="@+id/btn_dateTS2"
+        android:layout_alignStart="@+id/btn_dateTS2" />
+    <!--button for adding new event-->
+    <EditText
+        android:id="@+id/idEdtEventGuest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter Guests" />
     <Button
         android:id="@+id/idBtnCreateEvent"
         android:layout_width="match_parent"

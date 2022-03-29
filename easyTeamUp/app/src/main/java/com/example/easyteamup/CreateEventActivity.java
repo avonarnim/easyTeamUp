@@ -31,8 +31,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private String username;
-    private EditText eventNameEdt, eventLatEdt, eventLongEdt, dateTxtDL, timeTxtDL, dateTxtTS1, timeTxtTS1;
-    private Button addEventBtn, profileBtn, viewEventButton, datePickerBtnDL, timePickerBtnDL, datePickerBtnTS1, timePickerBtnTS1;
+    private EditText eventNameEdt, eventLatEdt, eventLongEdt, dateTxtDL, timeTxtDL, dateTxtTS1, timeTxtTS1, dateTxtTS2, timeTxtTS2, dateTxtTS3, timeTxtTS3, guests;
+    private Button addEventBtn, profileBtn, viewEventButton, datePickerBtnDL, timePickerBtnDL, datePickerBtnTS1, timePickerBtnTS1, datePickerBtnTS2, timePickerBtnTS2, datePickerBtnTS3, timePickerBtnTS3;
     private DBHandler dbHandler;
     private int mYear, mMonth, mDay, mHour, mMinute;
 
@@ -49,18 +49,30 @@ public class CreateEventActivity extends AppCompatActivity {
         eventNameEdt = findViewById(R.id.idEdtEventName);
         eventLatEdt = findViewById(R.id.idEdtEventLatitude);
         eventLongEdt = findViewById(R.id.idEdtEventLongitude);
+        //deadline
         datePickerBtnDL = findViewById(R.id.dl_btn_date);
         timePickerBtnDL = findViewById(R.id.dl_btn_time);
         dateTxtDL = findViewById(R.id.dl_in_date);
         timeTxtDL = findViewById(R.id.dl_in_time);
+        //timeslot1
         datePickerBtnTS1 = findViewById(R.id.btn_dateTS1);
         timePickerBtnTS1 = findViewById(R.id.btn_timeTS1);
         dateTxtTS1 = findViewById(R.id.in_dateTS1);
         timeTxtTS1 = findViewById(R.id.in_timeTS1);
+        //timeslot2
+        datePickerBtnTS2 = findViewById(R.id.btn_dateTS2);
+        timePickerBtnTS2 = findViewById(R.id.btn_timeTS2);
+        dateTxtTS2 = findViewById(R.id.in_dateTS2);
+        timeTxtTS2 = findViewById(R.id.in_timeTS2);
+        //timeslot3
+        datePickerBtnTS3 = findViewById(R.id.btn_dateTS3);
+        timePickerBtnTS3 = findViewById(R.id.btn_timeTS3);
+        dateTxtTS3 = findViewById(R.id.in_dateTS3);
+        timeTxtTS3 = findViewById(R.id.in_timeTS3);
         addEventBtn = findViewById(R.id.idBtnCreateEvent);
         viewEventButton = findViewById(R.id.idBtnCreateToViewEvent);
         profileBtn = findViewById(R.id.idBtnCreateToProfile);
-
+        guests= findViewById(R.id.idEdtEventGuest);
         // creating a new dbhandler class
         // and passing our context to it.
         dbHandler = new DBHandler(CreateEventActivity.this);
@@ -167,8 +179,92 @@ public class CreateEventActivity extends AppCompatActivity {
                 timePickerDialog.show();
             }
         });
+        datePickerBtnTS2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        // below line is to add on click listener for our add course button.
+                DatePickerDialog datePickerDialog = new DatePickerDialog(CreateEventActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                dateTxtTS2.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+
+        timePickerBtnTS2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                timeTxtTS2.setText(hourOfDay + ":" + minute);
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
+        datePickerBtnTS3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(CreateEventActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                dateTxtTS3.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+
+        timePickerBtnTS3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                timeTxtTS3.setText(hourOfDay + ":" + minute);
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
+
+        // below line is to add on click listener for our add event button.
         addEventBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,15 +280,25 @@ public class CreateEventActivity extends AppCompatActivity {
                 String timeDL = timeTxtDL.getText().toString();
                 String dateTS1 = dateTxtTS1.getText().toString();
                 String timeTS1 = timeTxtTS1.getText().toString();
+                String dateTS2 = dateTxtTS2.getText().toString();
+                String timeTS2 = timeTxtTS2.getText().toString();
+                String dateTS3 = dateTxtTS3.getText().toString();
+                String timeTS3 = timeTxtTS3.getText().toString();
 
                 String eventDeadline = dateDL + " " + timeDL;
                 String timeSlot1 = dateTS1+ " " + timeTS1;
+                String timeSlot2 = dateTS2+ " " + timeTS2;
+                String timeSlot3 = dateTS3+ " " + timeTS3;
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-m-yyyy hh:mm");
                 Date parsedDateTimeDL;
                 Date parsedDateTimeTS1;
+                Date parsedDateTimeTS2;
+                Date parsedDateTimeTS3;
                 try {
                     parsedDateTimeDL = dateFormat.parse(eventDeadline);
                     parsedDateTimeTS1 = dateFormat.parse(timeSlot1);
+                    parsedDateTimeTS2 = dateFormat.parse(timeSlot2);
+                    parsedDateTimeTS3 = dateFormat.parse(timeSlot3);
                 } catch (ParseException e) {
                     Toast.makeText(CreateEventActivity.this, "Encountered an error while parsing the selected date and time..", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -200,6 +306,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
                 Long eventDeadlineLong = parsedDateTimeDL.getTime();
                 Long timeSlot1Long = parsedDateTimeTS1.getTime();
+                Long timeSlot2Long = parsedDateTimeTS2.getTime();
+                Long timeSlot3Long = parsedDateTimeTS3.getTime();
 
                 // TODO: convert the selected time to unix timestamp
 
@@ -210,11 +318,13 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
 
                 // on below line we are calling a method to add new
-                // course to sqlite data and pass all our values to it.
+                // event to sqlite data and pass all our values to it.
                 int id = dbHandler.addNewEvent(eventName, eventHost, eventLat, eventLong, eventDeadlineLong);
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot1Long); //getting event ID once its made
+                dbHandler.addNewTimeslot(id, eventHost, timeSlot2Long);
+                dbHandler.addNewTimeslot(id, eventHost, timeSlot3Long);
                 // after adding the data we are displaying a toast message.
-                Toast.makeText(CreateEventActivity.this, "Course has been added.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateEventActivity.this, "Event has been added.", Toast.LENGTH_SHORT).show();
                 eventNameEdt.setText("");
                 eventLatEdt.setText("");
                 eventLongEdt.setText("");
@@ -222,6 +332,10 @@ public class CreateEventActivity extends AppCompatActivity {
                 timeTxtDL.setText("");
                 dateTxtTS1.setText("");
                 timeTxtTS1.setText("");
+                dateTxtTS2.setText("");
+                timeTxtTS2.setText("");
+                dateTxtTS3.setText("");
+                timeTxtTS3.setText("");
             }
         });
     }
