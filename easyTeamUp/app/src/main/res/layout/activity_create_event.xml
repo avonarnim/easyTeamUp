@@ -146,6 +146,7 @@
         android:layout_below="@+id/btn_dateTS1"
         android:layout_alignLeft="@+id/btn_dateTS1"
         android:layout_alignStart="@+id/btn_dateTS1" />
+
     <!--button for adding new course-->
     <TextView
         android:id="@+id/ts2_title"

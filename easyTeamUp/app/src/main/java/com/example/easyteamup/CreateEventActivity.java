@@ -323,6 +323,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot1Long); //getting event ID once its made
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot2Long);
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot3Long);
+
+//                dbHandler.addNewTimeslot(id, eventHost, timeSlot1Long); //getting event ID once its made
                 // after adding the data we are displaying a toast message.
                 Toast.makeText(CreateEventActivity.this, "Event has been added.", Toast.LENGTH_SHORT).show();
                 eventNameEdt.setText("");
@@ -336,6 +338,10 @@ public class CreateEventActivity extends AppCompatActivity {
                 timeTxtTS2.setText("");
                 dateTxtTS3.setText("");
                 timeTxtTS3.setText("");
+
+                Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
             }
         });
     }

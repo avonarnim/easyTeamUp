@@ -1,6 +1,8 @@
 package com.example.easyteamup;
 import java.util.List;
 
+import java.util.List;
+
 public class PrivateEvent extends Event {
     private List<String> guestList;
     public String type = "Private";
