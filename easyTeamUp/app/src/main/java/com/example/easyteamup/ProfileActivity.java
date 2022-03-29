@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 
@@ -204,7 +205,8 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(ProfileActivity.this, EventPageActivity.class);
                         // pass eventId and username to the event activity
-                        intent.putExtra("eventId",eventId);
+                        intent.putExtra("eventId", eventId);
+                        Log.v("eventId", String.valueOf(eventId));
                         intent.putExtra("username", username);
                         startActivity(intent);
                     }
