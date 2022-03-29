@@ -115,8 +115,9 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(DEADLINE_COL, deadline);
 
         db.insert(EVENT_TABLE_NAME, null, values);
-        Cursor cursorID = db.rawQuery("SELECT LAST_INSERT_ID()", new String[]{"data"}); //is this allowed be its WritableDB??
-        int eventId = cursorID.getInt(1);
+        Cursor cursorID = db.rawQuery("SELECT " + EVENT_ID_COL +" FROM " + EVENT_TABLE_NAME +
+                " WHERE " + EVENT_NAME_COL + " =?", new String[]{"data"});
+        int eventId = cursorID.getPosition();
         db.close();
         return eventId;
     }
