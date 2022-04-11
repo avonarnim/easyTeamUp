@@ -48,7 +48,6 @@ public class EventPageActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             int eventId = extras.getInt("eventId");
-            Log.v("eventId inside event page", String.valueOf(eventId));
             String username = extras.getString("username");
             Event eventInfo = dbHandler.getEventInfo(eventId);
 
@@ -104,6 +103,10 @@ public class EventPageActivity extends AppCompatActivity {
                         for(int i = 0; i < guestList.size(); i++) {
                             dbHandler.addNewMessage(eventInfo.getHost(), guestList.get(i), "Changes have been made to event: " + name);
                         }
+
+                        Intent intent = new Intent(EventPageActivity.this, ProfileActivity.class);
+                        intent.putExtra("username",username);
+                        startActivity(intent);
                     }
                 });
             }
