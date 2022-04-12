@@ -17,7 +17,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
 
     // below int is our database version
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 18;
 
     // variables are for table names.
     private static final String EVENT_TABLE_NAME = "events";
@@ -221,7 +221,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(DEADLINE_COL, event.getDeadline());
         values.put(FINAL_TIME_COL, event.getFinalTime());
 
-        db.update(EVENT_TABLE_NAME,values,"eventId = '"+event.getId()+"'",null);
+        db.update(EVENT_TABLE_NAME,values,"eventId=?",new String[]{String.valueOf(event.getId())});
     }
 
     // Inserts a new availability into Timeslot table
@@ -295,6 +295,7 @@ public class DBHandler extends SQLiteOpenHelper {
     // event_id, then making sure all events are in the future
     // Being in the future is determined by either not having a final time assigned yet or having a
     // final time greater than the current time
+    @SuppressLint("Range")
     public ArrayList<Event> futureEvents(String username, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] args = {"'" + username + "'"};
@@ -309,13 +310,13 @@ public class DBHandler extends SQLiteOpenHelper {
         if (cursorEvents.moveToFirst()) {
             do {
                 //Long time = getDecidedTime(cursorEvents.getInt(1));
-                eventsList.add(new Event(cursorEvents.getInt(1),
-                        cursorEvents.getString(2),
-                        cursorEvents.getString(3),
-                        cursorEvents.getFloat(4),
-                        cursorEvents.getFloat(5),
-                        cursorEvents.getLong(6),
-                        cursorEvents.getLong(7)));
+                eventsList.add(new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
+                        cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
+                        cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
+                        cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
+                        cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
+                        cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
+                        cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL))));
             } while (cursorEvents.moveToNext());
         }
         cursorEvents.close();
@@ -323,6 +324,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // want events where a timeslot chosen by the user matched the final_time_col && event is in future
+    @SuppressLint("Range")
     public ArrayList<Event> pastEvents(String username, Long currentTime) {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] args = {"'" + username + "'"};
@@ -339,13 +341,13 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursorEvents.moveToFirst()) {
                 do {
                     //Long time = getDecidedTime(cursorEvents.getInt(1));
-                    eventsList.add(new Event(cursorEvents.getInt(1),
-                            cursorEvents.getString(2),
-                            cursorEvents.getString(3),
-                            cursorEvents.getFloat(4),
-                            cursorEvents.getFloat(5),
-                            cursorEvents.getLong(6),
-                            cursorEvents.getLong(7)));
+                    eventsList.add(new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
+                            cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
+                            cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
+                            cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
+                            cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
+                            cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
+                            cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL))));
                 } while (cursorEvents.moveToNext());
             }
             cursorEvents.close();

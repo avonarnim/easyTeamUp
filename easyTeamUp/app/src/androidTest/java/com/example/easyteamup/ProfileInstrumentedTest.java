@@ -47,15 +47,8 @@ public class ProfileInstrumentedTest {
     public UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     public DBHandler dataSource = new DBHandler(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
-
-//    @Before
-//    public void beforeTest() {
-//
-//    }
-
     @Test
     public void testHostedEvent() {
-        dataSource.setDbVersion();
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         int eventId = dataSource.addNewEvent("currentHostEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(111000));
 
@@ -121,7 +114,7 @@ public class ProfileInstrumentedTest {
     public void testHostEventChange() throws UiObjectNotFoundException {
 
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-//        int eventId = dataSource.addNewEvent("currentHostEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("changeHostEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(11111000));
 
         onView(withId(R.id.username))
                 .perform(typeText("username"), closeSoftKeyboard());
@@ -129,27 +122,69 @@ public class ProfileInstrumentedTest {
                 .perform(typeText("password"), closeSoftKeyboard());
         onView(withId(R.id.signUpButton)).perform(click());
 
-
         UiObject hostedEvent = device.findObject(new UiSelector()
-                .text("currentHostEvent")
+                .text("changeHostEvent")
                 .className("android.widget.TextView"));
 
-        if(hostedEvent.exists()) {
             hostedEvent.click();
             UiObject editEventName = device.findObject(new UiSelector()
-                    .text("currentHostEvent")
-                    .className("android.widget.TextView"));
+                    .text("changeHostEvent")
+                    .className("android.widget.EditText"));
             editEventName.setText("newEventName");
             UiObject saveButton = device.findObject(new UiSelector()
-                    .text("Save Changes")
+                    .text("SAVE CHANGES")
                     .className("android.widget.Button"));
             saveButton.click();
 
-            UiObject newHostEvent = device.findObject(new UiSelector()
-                    .text("newEventName")
+    }
+
+        @Test
+    public void testMessageSentToGuests() throws UiObjectNotFoundException {
+        Long currentTime = new Long(System.currentTimeMillis() / 100L);
+        int eventId = dataSource.addNewEvent("testMessageEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(11111000));
+        dataSource.addNewProfile("guestUsername", "guestPassword");
+        dataSource.addNewTimeslot(eventId, "guestUsername", currentTime+Long.valueOf(111000));
+
+        onView(withId(R.id.username))
+                .perform(typeText("username"), closeSoftKeyboard());
+        onView(withId(R.id.password))
+                .perform(typeText("password"), closeSoftKeyboard());
+        onView(withId(R.id.signUpButton)).perform(click());
+
+        UiObject hostedEvent = device.findObject(new UiSelector()
+                .text("testMessageEvent")
+                .className("android.widget.TextView"));
+
+            hostedEvent.click();
+            UiObject editEventName = device.findObject(new UiSelector()
+                    .text("testMessageEvent")
+                    .className("android.widget.EditText"));
+            editEventName.setText("changingEventName");
+            UiObject saveButton = device.findObject(new UiSelector()
+                    .text("SAVE CHANGES")
+                    .className("android.widget.Button"));
+            saveButton.click();
+
+            UiObject signOut = device.findObject(new UiSelector()
+                    .text("Sign Out")
                     .className("android.widget.TextView"));
-            assertTrue(newHostEvent.exists());
-        }
+            signOut.click();
+
+            onView(withId(R.id.usernameLogIn))
+                    .perform(typeText("guestUsername"), closeSoftKeyboard());
+            onView(withId(R.id.passwordLogIn))
+                    .perform(typeText("guestPassword"), closeSoftKeyboard());
+            onView(withId(R.id.logInButton)).perform(click());
+
+            UiObject message = device.findObject(new UiSelector()
+                    .text("Messages")
+                    .className("android.widget.TextView"));
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            assertTrue(message.exists());
 
     }
 

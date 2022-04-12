@@ -21,7 +21,7 @@ import java.util.ArrayList;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-@RunWith(AndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
 public class DBHandlerInstrumentedTest {
 
     private DBHandler dataSource;
