@@ -129,12 +129,13 @@ public class EventPageActivity extends AppCompatActivity {
                 });
             }
             // user is not the host
-            else if (eventInfo.getHost() != username) {
+            else if (!eventInfo.getHost().equals(username)) {
                 List<String> guestList = dbHandler.getGuestList(eventId);
                 // loop through guest list and see if user is a guest
                 boolean onList = false;
                 for(int i = 0; i < guestList.size(); i++) {
-                    if(guestList.get(i) == username) {
+                    Log.d("guest list", guestList.get(i));
+                    if(guestList.get(i).equals(username)) {
                         onList = true;
                     }
                 }
@@ -169,7 +170,7 @@ public class EventPageActivity extends AppCompatActivity {
                     page.addView(finalTimeText);
 
                     Button withdrawBtn = new Button(this);
-                    withdrawBtn.setText("Save Changes");
+                    withdrawBtn.setText("Withdraw");
                     withdrawBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                     page.addView(withdrawBtn);
 
@@ -180,6 +181,10 @@ public class EventPageActivity extends AppCompatActivity {
                             dbHandler.updateEventGuestList(eventId, username);
                             // Send message to host
                             dbHandler.addNewMessage(username, eventInfo.getHost(), "User " + username + " has withdrawn from your event " + eventInfo.getName());
+
+                            Intent intent = new Intent(EventPageActivity.this, ProfileActivity.class);
+                            intent.putExtra("username",username);
+                            startActivity(intent);
                         }
                     });
                 }

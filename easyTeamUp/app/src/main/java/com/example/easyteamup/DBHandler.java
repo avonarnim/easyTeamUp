@@ -17,7 +17,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
 
     // below int is our database version
-    private static final int DB_VERSION = 18;
+    private static final int DB_VERSION = 20;
 
     // variables are for table names.
     private static final String EVENT_TABLE_NAME = "events";

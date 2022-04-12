@@ -138,7 +138,7 @@ public class ProfileInstrumentedTest {
 
     }
 
-        @Test
+    @Test
     public void testMessageSentToGuests() throws UiObjectNotFoundException {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         int eventId = dataSource.addNewEvent("testMessageEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(11111000));
@@ -177,7 +177,7 @@ public class ProfileInstrumentedTest {
             onView(withId(R.id.logInButton)).perform(click());
 
             UiObject message = device.findObject(new UiSelector()
-                    .text("Messages")
+                    .text("FROM: username\nChanges have been made to event: changingEventName")
                     .className("android.widget.TextView"));
             try {
                 Thread.sleep(2000);
@@ -185,7 +185,50 @@ public class ProfileInstrumentedTest {
                 e.printStackTrace();
             }
             assertTrue(message.exists());
+    }
 
+    @Test
+    public void testMessageSentToHost() throws UiObjectNotFoundException {
+        Long currentTime = new Long(System.currentTimeMillis() / 100L);
+        int eventId = dataSource.addNewEvent("testHostMessageEvent", "username", 0.0, 0.0, currentTime + Long.valueOf(11111000));
+        dataSource.addNewTimeslot(eventId, "guest", currentTime + Long.valueOf(111000));
+
+        onView(withId(R.id.username))
+                .perform(typeText("guest"), closeSoftKeyboard());
+        onView(withId(R.id.password))
+                .perform(typeText("guestPassword"), closeSoftKeyboard());
+        onView(withId(R.id.signUpButton)).perform(click());
+
+        UiObject event = device.findObject(new UiSelector()
+                .text("testHostMessageEvent")
+                .className("android.widget.TextView"));
+        event.click();
+
+        UiObject withdraw = device.findObject(new UiSelector()
+                .text("WITHDRAW")
+                .className("android.widget.Button"));
+        withdraw.click();
+
+        UiObject signOut = device.findObject(new UiSelector()
+                .text("Sign Out")
+                .className("android.widget.TextView"));
+        signOut.click();
+
+        onView(withId(R.id.username))
+                .perform(typeText("username"), closeSoftKeyboard());
+        onView(withId(R.id.password))
+                .perform(typeText("password"), closeSoftKeyboard());
+        onView(withId(R.id.signUpButton)).perform(click());
+
+        UiObject message = device.findObject(new UiSelector()
+                .text("FROM: guest\nUser guest has withdrawn from your event testHostMessageEvent")
+                .className("android.widget.TextView"));
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        assertTrue(message.exists());
     }
 
 

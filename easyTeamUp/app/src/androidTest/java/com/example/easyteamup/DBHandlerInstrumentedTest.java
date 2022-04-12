@@ -1,6 +1,7 @@
 package com.example.easyteamup;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -109,29 +110,36 @@ public class DBHandlerInstrumentedTest {
     @Test
     public void testFutureEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
-        dataSource.addNewTimeslot(eventId, "sampleGuest", currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleFutureEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        dataSource.addNewTimeslot(eventId, "sampleGuest", currentTime+Long.valueOf(11000));
         ArrayList<Event> retrievedEvent = dataSource.futureEvents("sampleGuest", currentTime);
 
-        assertTrue(retrievedEvent.get(0).getName().equals("sampleEvent"));
-        assertTrue(retrievedEvent.get(0).getHost().equals("hostUsername"));
-        assertTrue(Double.valueOf(retrievedEvent.get(0).getLatitude()).equals(1.0));
-        assertTrue(Double.valueOf(retrievedEvent.get(0).getLongitude()).equals(1.0));
-        assertTrue(retrievedEvent.get(0).getDeadline().equals(currentTime+Long.valueOf(111000)));
+        for(int i = 0; i < retrievedEvent.size(); i++) {
+            if(retrievedEvent.get(0).getName().equals("sampleFutureEvent"))  {
+                assertTrue(retrievedEvent.get(0).getHost().equals("hostUsername"));
+                assertTrue(Double.valueOf(retrievedEvent.get(0).getLatitude()).equals(1.0));
+                assertTrue(Double.valueOf(retrievedEvent.get(0).getLongitude()).equals(1.0));
+                assertTrue(retrievedEvent.get(0).getDeadline().equals(currentTime+Long.valueOf(111000)));
+            }
+        }
     }
 
     @Test
     public void testPastEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime-Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("samplePastEvent", "hostUsername", 0.0, 0.0, currentTime-Long.valueOf(111000));
         dataSource.addNewTimeslot(eventId, "sampleGuest", Long.valueOf(111000));
         ArrayList<Event> retrievedEvent = dataSource.pastEvents("sampleGuest", currentTime);
 
-        assertTrue(retrievedEvent.get(0).getName().equals("sampleEvent"));
-        assertTrue(retrievedEvent.get(0).getHost().equals("hostUsername"));
-        assertTrue(Double.valueOf(retrievedEvent.get(0).getLatitude()).equals(1.0));
-        assertTrue(Double.valueOf(retrievedEvent.get(0).getLongitude()).equals(1.0));
-        assertTrue(retrievedEvent.get(0).getDeadline().equals(currentTime-Long.valueOf(111000)));
+        for(int i = 0; i < retrievedEvent.size(); i++) {
+            if (retrievedEvent.get(0).getName().equals("samplePastEvent")) {
+                assertTrue(retrievedEvent.get(0).getHost().equals("hostUsername"));
+                assertTrue(Double.valueOf(retrievedEvent.get(0).getLatitude()).equals(1.0));
+                assertTrue(Double.valueOf(retrievedEvent.get(0).getLongitude()).equals(1.0));
+                assertTrue(retrievedEvent.get(0).getDeadline().equals(currentTime - Long.valueOf(111000)));
+            }
+        }
+
     }
 
     @Test
