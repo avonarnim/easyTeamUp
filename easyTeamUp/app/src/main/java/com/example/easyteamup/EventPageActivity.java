@@ -48,38 +48,55 @@ public class EventPageActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             int eventId = extras.getInt("eventId");
-            Log.v("eventId inside event page", String.valueOf(eventId));
             String username = extras.getString("username");
             Event eventInfo = dbHandler.getEventInfo(eventId);
 
             // if user is the host of this event AND event deadline has not passed, they are able to edit (EditText) the event
-            if((eventInfo.getHost() == username) && (eventInfo.getDeadline() < System.currentTimeMillis())) {
-                EditText eventIdText = new EditText(this);
-                eventIdText.setText(String.valueOf(eventId));
+            if((eventInfo.getHost().equals(username)) && (eventInfo.getDeadline() < System.currentTimeMillis())) {
+                TextView eventIdText = new TextView(this);
+                eventIdText.setText("Event ID: " + String.valueOf(eventId));
                 page.addView(eventIdText);
 
+                TextView host = new TextView(this);
+                host.setText("Host:");
+                page.addView(host);
                 TextView hostText = new TextView(this);
-                hostText.setText("Host: " + eventInfo.getHost());
+                hostText.setText(eventInfo.getHost());
                 page.addView(hostText);
 
+                TextView name = new TextView(this);
+                name.setText("Event Name:");
+                page.addView(name);
                 EditText nameText = new EditText(this);
-                nameText.setText("Event Name: " + eventInfo.getName());
+                nameText.setText(eventInfo.getName());
                 page.addView(nameText);
 
+                TextView longitude = new TextView(this);
+                longitude.setText("Longitude:");
+                page.addView(longitude);
                 EditText longitudeText = new EditText(this);
-                longitudeText.setText("Longitude: " + eventInfo.getLongitude());
+                longitudeText.setText(String.valueOf(eventInfo.getLongitude()));
                 page.addView(longitudeText);
 
+                TextView latitude = new TextView(this);
+                latitude.setText("Latitude:");
+                page.addView(latitude);
                 EditText latitudeText = new EditText(this);
-                latitudeText.setText("Latitude: " + eventInfo.getLatitude());
+                latitudeText.setText(String.valueOf(eventInfo.getLatitude()));
                 page.addView(latitudeText);
 
+                TextView deadline = new TextView(this);
+                deadline.setText("Deadline:");
+                page.addView(deadline);
                 EditText deadlineText = new EditText(this);
-                deadlineText.setText("Deadline: " + eventInfo.getDeadline());
+                deadlineText.setText(String.valueOf(eventInfo.getDeadline()));
                 page.addView(deadlineText);
 
+                TextView finalTime = new TextView(this);
+                finalTime.setText("Final Time:");
+                page.addView(finalTime);
                 EditText finalTimeText = new EditText(this);
-                finalTimeText.setText("Final Time: " + eventInfo.getFinalTime());
+                finalTimeText.setText(String.valueOf(eventInfo.getFinalTime()));
                 page.addView(finalTimeText);
 
                 Button saveBtn = new Button(this);
@@ -104,16 +121,21 @@ public class EventPageActivity extends AppCompatActivity {
                         for(int i = 0; i < guestList.size(); i++) {
                             dbHandler.addNewMessage(eventInfo.getHost(), guestList.get(i), "Changes have been made to event: " + name);
                         }
+
+                        Intent intent = new Intent(EventPageActivity.this, ProfileActivity.class);
+                        intent.putExtra("username",username);
+                        startActivity(intent);
                     }
                 });
             }
             // user is not the host
-            else if (eventInfo.getHost() != username) {
+            else if (!eventInfo.getHost().equals(username)) {
                 List<String> guestList = dbHandler.getGuestList(eventId);
                 // loop through guest list and see if user is a guest
                 boolean onList = false;
                 for(int i = 0; i < guestList.size(); i++) {
-                    if(guestList.get(i) == username) {
+                    Log.d("guest list", guestList.get(i));
+                    if(guestList.get(i).equals(username)) {
                         onList = true;
                     }
                 }
@@ -148,7 +170,7 @@ public class EventPageActivity extends AppCompatActivity {
                     page.addView(finalTimeText);
 
                     Button withdrawBtn = new Button(this);
-                    withdrawBtn.setText("Save Changes");
+                    withdrawBtn.setText("Withdraw");
                     withdrawBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                     page.addView(withdrawBtn);
 
@@ -159,6 +181,10 @@ public class EventPageActivity extends AppCompatActivity {
                             dbHandler.updateEventGuestList(eventId, username);
                             // Send message to host
                             dbHandler.addNewMessage(username, eventInfo.getHost(), "User " + username + " has withdrawn from your event " + eventInfo.getName());
+
+                            Intent intent = new Intent(EventPageActivity.this, ProfileActivity.class);
+                            intent.putExtra("username",username);
+                            startActivity(intent);
                         }
                     });
                 }
