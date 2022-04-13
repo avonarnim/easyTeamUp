@@ -122,8 +122,8 @@ public class DBHandlerInstrumentedTest {
         for(int i = 0; i < retrievedEvent.size(); i++) {
             if(retrievedEvent.get(0).getName().equals("sampleFutureEvent"))  {
                 assertTrue(retrievedEvent.get(0).getHost().equals("hostUsername"));
-                assertTrue(Double.valueOf(retrievedEvent.get(0).getLatitude()).equals(1.0));
-                assertTrue(Double.valueOf(retrievedEvent.get(0).getLongitude()).equals(1.0));
+                assertTrue(Double.valueOf(retrievedEvent.get(0).getLatitude()).equals(0.0));
+                assertTrue(Double.valueOf(retrievedEvent.get(0).getLongitude()).equals(0.0));
                 assertTrue(retrievedEvent.get(0).getDeadline().equals(currentTime+Long.valueOf(111000)));
             }
         }
@@ -139,8 +139,8 @@ public class DBHandlerInstrumentedTest {
         for(int i = 0; i < retrievedEvent.size(); i++) {
             if (retrievedEvent.get(0).getName().equals("samplePastEvent")) {
                 assertTrue(retrievedEvent.get(0).getHost().equals("hostUsername"));
-                assertTrue(Double.valueOf(retrievedEvent.get(0).getLatitude()).equals(1.0));
-                assertTrue(Double.valueOf(retrievedEvent.get(0).getLongitude()).equals(1.0));
+                assertTrue(Double.valueOf(retrievedEvent.get(0).getLatitude()).equals(0.0));
+                assertTrue(Double.valueOf(retrievedEvent.get(0).getLongitude()).equals(0.0));
                 assertTrue(retrievedEvent.get(0).getDeadline().equals(currentTime - Long.valueOf(111000)));
             }
         }
