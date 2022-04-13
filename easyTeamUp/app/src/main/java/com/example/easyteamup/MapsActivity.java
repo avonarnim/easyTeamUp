@@ -117,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                Log.i("", "MAP IDLE");
+                Log.i("", "MAP -- IDLE");
 
                 // Get bounds and check if they're truly different from previously
                 LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
@@ -137,11 +137,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 ArrayList<Event> events = dbHandler.getEventsInArea(bounds.northeast.latitude, bounds.northeast.longitude,
                         bounds.southwest.latitude, bounds.southwest.longitude, System.currentTimeMillis());
-                Log.i("", "MAP -- " + events);
-
-                events.add(new Event(1, "good event", "adam", 40.0, 40.0, Long.valueOf(1748337504), Long.valueOf(1848337504)));
-                events.add(new Event(2, "ok event", "adam", 45.0, 40.0, Long.valueOf(1748337504), Long.valueOf(1848337504)));
-                events.add(new Event(3, "bad event", "adam", 35.0, 40.0, Long.valueOf(1748337504), Long.valueOf(1848337504)));
 
                 for (Event event : events) {
                     locations.put(event.getId(), new LatLng(event.getLatitude(), event.getLongitude()));

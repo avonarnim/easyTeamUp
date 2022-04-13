@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import android.util.Log;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
@@ -47,6 +48,7 @@ public class DBHandler extends SQLiteOpenHelper {
     // NOTE: going to get "messages" from messages table using profileId
 
     // variables for the timeslots table
+    private static final String TIMESLOT_ID_COL = "timeslotId";
     // EVENT_ID_COL (defined above)
     // USERNAME_COL (defined above)
     private static final String SELECTED_TIME_COL = "selectedTime";
@@ -83,7 +85,8 @@ public class DBHandler extends SQLiteOpenHelper {
         // Timeslots table
         // Holds selected-as-ok timeslots for each event's interested users
         String createTimeslots = "CREATE TABLE IF NOT EXISTS " + TIMESLOTS_TABLE_NAME + " ("
-                + EVENT_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + TIMESLOT_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + EVENT_ID_COL + " INTEGER, "
                 + USERNAME_COL + " TEXT,"
                 + SELECTED_TIME_COL + " INTEGER)";
 
@@ -99,6 +102,12 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(createProfiles);
         db.execSQL(createTimeslots);
         db.execSQL(createMessages);
+    }
+
+    public void deleteTableContents(String table) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + table);
+        db.close();
     }
 
     // Inserts a new event into the Event table
@@ -232,7 +241,7 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        //values.put(EVENT_ID_COL, eventId);
+        values.put(EVENT_ID_COL, eventId);
         values.put(USERNAME_COL, profile);
         values.put(SELECTED_TIME_COL, selectedTime);
 
@@ -355,22 +364,30 @@ public class DBHandler extends SQLiteOpenHelper {
         return eventsList;
     }
 
+    @SuppressLint("Range")
     public ArrayList<Event> getEventsInArea(Double rightUpperLat, Double rightUpperLong,
-                                         Double leftLowerLat, Double leftLowerLong, Long currentTime) {
+                                            Double leftLowerLat, Double leftLowerLong, Long currentTime) {
         //getEventsInArea
         SQLiteDatabase db = this.getReadableDatabase();
+        String query;
 
-        String[] args = {"'" + currentTime + "'",
-                "'" + leftLowerLat + "'",
-                "'" + rightUpperLat + "'",
-                "'" + leftLowerLong + "'",
-                "'" + rightUpperLong + "'"};
-        String query = "SELECT * FROM events WHERE ((finalTime IS NOT NULL" +
-                " AND finalTime >\"" + currentTime + "\")" +
-                " OR finalTime IS NULL)" +
-                " AND latitude >\"" +  leftLowerLat + "\"AND " + "latitude <\"" + rightUpperLat +
-                " AND " + "longitude <\"" + leftLowerLong +
-                " AND " + "longitude >\"" + rightUpperLong + "\"";
+        if (rightUpperLong < 0 && leftLowerLong > 0) {
+            query = "SELECT * FROM events WHERE ((finalTime IS NOT NULL" +
+                    " AND finalTime >" + currentTime + ")" +
+                    " OR finalTime IS NULL)" +
+                    " AND latitude >" +  leftLowerLat +
+                    " AND latitude <" + rightUpperLat +
+                    " AND ((longitude > 0 AND longitude > " + leftLowerLong + ") OR (" +
+                    " longitude < 0 AND longitude < " + rightUpperLong + "))";
+        } else {
+            query = "SELECT * FROM events WHERE ((finalTime IS NOT NULL" +
+                    " AND finalTime >" + currentTime + ")" +
+                    " OR finalTime IS NULL)" +
+                    " AND latitude >" + leftLowerLat +
+                    " AND latitude <" + rightUpperLat +
+                    " AND longitude >" + leftLowerLong +
+                    " AND longitude <" + rightUpperLong;
+        }
         Cursor cursorEvents = db.rawQuery(query, null);
 
         Log.i("", "DBHANDLER -- performed query ");
@@ -380,13 +397,13 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursorEvents.moveToFirst()) {
                 do {
                     //Long time = getDecidedTime(cursorEvents.getInt(1));
-                    eventsList.add(new Event(cursorEvents.getInt(1),
-                            cursorEvents.getString(2),
-                            cursorEvents.getString(3),
-                            cursorEvents.getFloat(4),
-                            cursorEvents.getFloat(5),
-                            cursorEvents.getLong(6),
-                            cursorEvents.getLong(7)));
+                    eventsList.add(new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
+                            cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
+                            cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
+                            cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
+                            cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
+                            cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
+                            cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL))));
                 } while (cursorEvents.moveToNext());
             }
             cursorEvents.close();
@@ -439,16 +456,16 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // Returns all of a host's possible timeslots allowed for a specific event
-    public ArrayList<Long> getAvailableTimeslots(String eventId) {
+    @SuppressLint("Range")
+    public ArrayList<Long> getAvailableTimeslots(Integer eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String[] args = {String.valueOf(eventId)};
-        Cursor cursorTimeslots = db.rawQuery("SELECT selectedTime FROM timeslots, events WHERE events.eventId=? " +
-                        "AND timeslots.eventId=events.eventId AND timeslots.profileId=events.eventHost",
-                args);
+        Cursor cursorTimeslots = db.rawQuery("SELECT selectedTime FROM timeslots, events WHERE events.eventId= " + eventId +
+                        " AND timeslots.eventId=events.eventId AND timeslots.username=events.eventHost", null);
+
         ArrayList<Long> timeSlots = new ArrayList<>();
         if (cursorTimeslots.moveToFirst()) {
             do {
-                timeSlots.add(cursorTimeslots.getLong(1));
+                timeSlots.add(cursorTimeslots.getLong(cursorTimeslots.getColumnIndex(SELECTED_TIME_COL)));
             } while (cursorTimeslots.moveToNext());
         }
         cursorTimeslots.close();
@@ -456,24 +473,36 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // Finds the most commonly-selected timeslot for an event
+    @SuppressLint("Range")
     public Long decideOnTime(int eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String[] args = {String.valueOf(eventId)};
-        Cursor cursorTimeslots = db.rawQuery("SELECT selectedTime, COUNT(selectedTime) FROM timeslots WHERE timeslots.eventId = ?",
-                args);
-        ArrayList<Long> timeSlots = new ArrayList<>();
-        Long decidedTime = new Long(0);
-        int maxCount = 0;
+        String query = "SELECT selectedTime FROM timeslots WHERE eventId = " + eventId;
+        Cursor cursorTimeslots = db.rawQuery(query,null);
+        HashMap<Long, Integer> timeToCount = new HashMap<>();
+
         if (cursorTimeslots.moveToFirst()) {
             do {
-                int count = cursorTimeslots.getInt(1);
-                if (count > maxCount) {
-                    maxCount = count;
-                    String decidedTimeString = cursorTimeslots.getString(0);
-                    decidedTime = new Long(decidedTimeString);
+                Long time = cursorTimeslots.getLong(cursorTimeslots.getColumnIndex(SELECTED_TIME_COL));
+
+                if (timeToCount.containsKey(time)) {
+                    timeToCount.put(time, timeToCount.get(time) + 1);
+                } else {
+                    timeToCount.put(time, 1);
                 }
             } while (cursorTimeslots.moveToNext());
         }
+
+        Long decidedTime = new Long(0);
+        int maxCount = 0;
+
+        for (Long time : timeToCount.keySet()) {
+            Integer count = timeToCount.get(time);
+            if (count > maxCount) {
+                maxCount = count;
+                decidedTime = time;
+            }
+        }
+
         cursorTimeslots.close();
         return decidedTime;
     }
@@ -485,31 +514,17 @@ public class DBHandler extends SQLiteOpenHelper {
     public Long getDecidedTime(int eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        Event selectedEvent;
-        String[] args = {String.valueOf(eventId)};
-        Cursor cursorEvents = db.rawQuery("SELECT * FROM events WHERE eventId = ?",
-                args);
-        if (cursorEvents.moveToFirst()) {
-            selectedEvent = new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
-                    cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
-                    cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
-                    cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
-                    cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
-                    cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
-                    cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)));
-        } else {
-            return new Long(0);
-        }
+        Event selectedEvent = getEventInfo(eventId);
+        if (selectedEvent == null) return new Long(0);
 
-        if (currentTime > selectedEvent.getDeadline()) {
+        if (currentTime < selectedEvent.getDeadline()) {
             return new Long(0);
         } else {
             if (selectedEvent.getFinalTime() == 0) {
-                decideOnTime(eventId);
-                return getDecidedTime(eventId);
-            } else {
-                return selectedEvent.getFinalTime();
+                selectedEvent.setFinalTime(decideOnTime(eventId));
+                updateEventInfo(selectedEvent);
             }
+            return selectedEvent.getFinalTime();
         }
     }
 }
