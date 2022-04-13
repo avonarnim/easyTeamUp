@@ -47,6 +47,11 @@ public class ProfileInstrumentedTest {
     public UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     public DBHandler dataSource = new DBHandler(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
+    @Before
+    public void setUp() {
+        dataSource.deleteTableContents("events");
+    }
+
     @Test
     public void testHostedEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
