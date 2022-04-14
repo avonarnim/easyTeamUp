@@ -194,6 +194,7 @@ public class ProfileInstrumentedTest {
 
     @Test
     public void testMessageSentToHost() throws UiObjectNotFoundException {
+        dataSource.deleteTableContents("messages");
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         int eventId = dataSource.addNewEvent("testHostMessageEvent", "username", 0.0, 0.0, currentTime + Long.valueOf(11111000));
         dataSource.addNewTimeslot(eventId, "guest", currentTime + Long.valueOf(111000));
