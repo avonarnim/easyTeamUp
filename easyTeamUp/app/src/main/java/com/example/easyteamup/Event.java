@@ -11,6 +11,7 @@ public class Event {
     private double longitude;
     private Long deadline;
     private Long finalTime;
+    private String type;
 
     public Event(int id, String name, String host, double latitude, double longitude, Long deadline, Long finalTime) {
         this.id = id;
@@ -74,5 +75,13 @@ public class Event {
 
     public void setFinalTime(Long finalTime) {
         this.finalTime = finalTime;
+    }
+
+    public void setType(String t) {
+        this.type = t;
+    }
+
+    public String getType() {
+        return this.type;
     }
 }

@@ -299,7 +299,13 @@ public class CreateEventActivity extends AppCompatActivity {
                     parsedDateTimeTS1 = dateFormat.parse(timeSlot1);
                     parsedDateTimeTS2 = dateFormat.parse(timeSlot2);
                     parsedDateTimeTS3 = dateFormat.parse(timeSlot3);
-                } catch (ParseException e) {
+                    if (parsedDateTimeDL.compareTo(parsedDateTimeTS1) > 1 || parsedDateTimeDL.compareTo(parsedDateTimeTS2) > 1 || parsedDateTimeDL.compareTo(parsedDateTimeTS3) > 1)
+                        throw new NumberFormatException();
+                } catch (NumberFormatException e) {
+                    Toast.makeText(CreateEventActivity.this, "Make sure the Deadline is before all Timeslots...", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                    return;
+                }catch (ParseException e) {
                     Toast.makeText(CreateEventActivity.this, "Encountered an error while parsing the selected date and time..", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                     return;

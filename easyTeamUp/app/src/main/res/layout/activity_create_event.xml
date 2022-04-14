@@ -235,6 +235,19 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:hint="Enter Guests" />
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/floating_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        />
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/list"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:drawSelectorOnTop="true"/>
     <Button
         android:id="@+id/idBtnCreateEvent"
         android:layout_width="match_parent"
