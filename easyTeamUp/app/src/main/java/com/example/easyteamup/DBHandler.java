@@ -205,21 +205,20 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String[] args = { String.valueOf(eventId) };
-        Event e = getEventInfo(eventId);
-        if (getGuestList(eventId).size() == 0) {
-            e.makePublic();
-        } else
-            e.makePrivate();
+
         Cursor cursorEvents = db.rawQuery("SELECT * FROM events WHERE eventId = ?", args);
         Log.d("Count",String.valueOf(cursorEvents.getCount()));
         if(cursorEvents.moveToFirst()) {
-            return new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
+            Event toReturn = new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
                     cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
                     cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
                     cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
                     cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
                     cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
                     cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)));
+            if (getGuestList(eventId).size() == 0) toReturn.makePublic();
+            else toReturn.makePrivate();
+            return toReturn;
         }
         else return null;
     }

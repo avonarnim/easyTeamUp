@@ -23,6 +23,7 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +57,11 @@ public class EventInstrumentedTests {
     public void setUp() {
         Intents.init();
         dataSource.deleteTableContents("events");
+    }
+
+    @After
+    public void breakDown() {
+        Intents.release();
     }
 
     @Test
