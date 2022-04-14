@@ -205,7 +205,11 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String[] args = { String.valueOf(eventId) };
-
+        Event e = getEventInfo(eventId);
+        if (getGuestList(eventId).size() == 0) {
+            e.makePublic();
+        } else
+            e.makePrivate();
         Cursor cursorEvents = db.rawQuery("SELECT * FROM events WHERE eventId = ?", args);
         Log.d("Count",String.valueOf(cursorEvents.getCount()));
         if(cursorEvents.moveToFirst()) {
@@ -247,6 +251,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         db.insert(TIMESLOTS_TABLE_NAME, null, values);
         db.close();
+        getEventInfo(eventId).makePrivate(); //
     }
 
     // Inserts a new message into the Message table

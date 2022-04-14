@@ -290,14 +290,20 @@ public class DBHandlerInstrumentedTest {
         assertNotEquals(0, messages.size());
     }
 
-
     @Test
     public void testPrivateEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
         dataSource.addNewTimeslot(eventId, "sampleGuest", Long.valueOf(111000));
-        dataSource.updateEventGuestList(eventId, "sampleGuest");
-        ArrayList<Message> messages = dataSource.getMessages("sampleGuest");
-        assertNotEquals(0, messages.size());
+        dataSource.getEventInfo(eventId);
+        assertEquals(dataSource.getEventInfo(eventId).getType(), "Private");
+    }
+
+    @Test
+    public void testPublicEvent() {
+        Long currentTime = new Long(System.currentTimeMillis() / 100L);
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        dataSource.getEventInfo(eventId);
+        assertEquals(dataSource.getEventInfo(eventId).getType(), "Public");
     }
 }

@@ -77,8 +77,11 @@ public class Event {
         this.finalTime = finalTime;
     }
 
-    public void setType(String t) {
-        this.type = t;
+    public void makePublic() {
+        this.type = "Public";
+    }
+    public void makePrivate() {
+        this.type = "Private";
     }
 
     public String getType() {
