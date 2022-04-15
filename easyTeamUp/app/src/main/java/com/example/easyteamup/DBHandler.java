@@ -25,6 +25,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String PROFILE_TABLE_NAME = "profiles";
     private static final String TIMESLOTS_TABLE_NAME = "timeslots";
     private static final String MESSAGES_TABLE_NAME = "messages";
+    private static final String GUEST_LIST_TABLE_NAME = "guestlists";
 
     // variables for the events table
     private static final String EVENT_ID_COL = "eventId";
@@ -58,6 +59,11 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String SENDER_USERNAME_COL = "sender";
     private static final String RECIPIENT_USERNAME_COL = "recipient";
     private static final String BODY_COL = "body";
+
+    // variables for the guest lists table
+    private static final String GUEST_ID_COL = "guestId";
+    // EVENT_ID_COL (defined above)
+    // USERNAME_COL (defined above)
 
     public DBHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -93,15 +99,21 @@ public class DBHandler extends SQLiteOpenHelper {
         // Messages table
         String createMessages = "CREATE TABLE IF NOT EXISTS " + MESSAGES_TABLE_NAME + " ("
                 + MESSAGE_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + SENDER_USERNAME_COL + " INTEGER,"
+                + SENDER_USERNAME_COL + " TEXT,"
                 + RECIPIENT_USERNAME_COL + " TEXT,"
                 + BODY_COL + " TEXT)";
+
+        String createGuestLists = "CREATE TABLE IF NOT EXISTS " + GUEST_LIST_TABLE_NAME + " ("
+                + GUEST_ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + EVENT_ID_COL + " INTEGER, "
+                + USERNAME_COL + " TEXT)";
 
         // Creates tables
         db.execSQL(createEvents);
         db.execSQL(createProfiles);
         db.execSQL(createTimeslots);
         db.execSQL(createMessages);
+        db.execSQL(createGuestLists);
     }
 
     public void deleteTableContents(String table) {
@@ -416,12 +428,25 @@ public class DBHandler extends SQLiteOpenHelper {
         return eventsList;
     }
 
+    public Integer addGuestToGuestList(int eventId, String guest) {
+        ContentValues values = new ContentValues();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        values.put(EVENT_ID_COL, eventId);
+        values.put(USERNAME_COL, guest);
+
+        Long rowID = db.insert(EVENT_TABLE_NAME, null, values);
+        Log.d("rowID", String.valueOf(rowID));
+        db.close();
+        return rowID.intValue();
+    }
+
     // return a guest list (users who selected a time slot) for an event
     @SuppressLint("Range")
     public ArrayList<String> getGuestList(int eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] args = {String.valueOf(eventId)};
-        Cursor cursorEvents = db.rawQuery("SELECT username FROM timeslots WHERE eventID=?",
+        Cursor cursorEvents = db.rawQuery("SELECT username FROM guestLists WHERE eventID=?",
                 args);
 
         ArrayList<String> guestList = new ArrayList<>();
