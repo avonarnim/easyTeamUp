@@ -435,7 +435,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(EVENT_ID_COL, eventId);
         values.put(USERNAME_COL, guest);
 
-        Long rowID = db.insert(EVENT_TABLE_NAME, null, values);
+        Long rowID = db.insert(GUEST_LIST_TABLE_NAME, null, values);
         Log.d("rowID", String.valueOf(rowID));
         db.close();
         return rowID.intValue();

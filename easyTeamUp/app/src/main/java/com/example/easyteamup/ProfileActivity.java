@@ -225,7 +225,30 @@ public class ProfileActivity extends AppCompatActivity {
             ArrayList<Message> messages = dbHandler.getMessages(username);
             for (int i = 0; i < messages.size(); i++) {
                 TextView textView = new TextView(this);
-                textView.setText("FROM: " + messages.get(i).getSender() + "\n" + messages.get(i).getBody());
+                String msg = messages.get(i).getBody();
+                if (msg.substring(0,6).equals("INVITE")) {
+                    Log.i("INVITE 1", msg);
+                    Integer instanceOfSpace = msg.indexOf(" ");
+                    Integer instanceOfSpace2 = msg.indexOf(" ", instanceOfSpace+1);
+                    Log.i("INVITE 1b", instanceOfSpace + " " + instanceOfSpace2);
+                    int eventId = Integer.valueOf(msg.substring(instanceOfSpace+1, instanceOfSpace2));
+                    Log.i("INVITE 2", "" + eventId);
+                    String eventName = msg.substring(instanceOfSpace2+1);
+                    Log.i("INVITE 3", eventName);
+                    textView.setText("FROM: " + messages.get(i).getSender() + "\nCome to " + eventName);
+
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(ProfileActivity.this, EventPageActivity.class);
+                            intent.putExtra("username", username);
+                            intent.putExtra("eventId", eventId);
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    textView.setText("FROM: " + messages.get(i).getSender() + "\n" + messages.get(i).getBody());
+                }
                 page.addView(textView);
             }
 
@@ -259,6 +282,7 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ProfileActivity.this, SignUpActivity.class);
+                    intent.removeExtra("username");
                     startActivity(intent);
                 }
             });

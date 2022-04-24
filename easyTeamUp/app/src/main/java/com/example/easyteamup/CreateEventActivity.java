@@ -24,6 +24,7 @@ import android.widget.TimePicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -31,10 +32,11 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private String username;
-    private EditText eventNameEdt, eventLatEdt, eventLongEdt, dateTxtDL, timeTxtDL, dateTxtTS1, timeTxtTS1, dateTxtTS2, timeTxtTS2, dateTxtTS3, timeTxtTS3, guests;
-    private Button addEventBtn, profileBtn, viewEventButton, datePickerBtnDL, timePickerBtnDL, datePickerBtnTS1, timePickerBtnTS1, datePickerBtnTS2, timePickerBtnTS2, datePickerBtnTS3, timePickerBtnTS3;
+    private EditText eventNameEdt, eventLatEdt, eventLongEdt, dateTxtDL, timeTxtDL, dateTxtTS1, timeTxtTS1, dateTxtTS2, timeTxtTS2, dateTxtTS3, timeTxtTS3, guestsEdt;
+    private Button addEventBtn, profileBtn, viewEventButton, datePickerBtnDL, timePickerBtnDL, datePickerBtnTS1, timePickerBtnTS1, datePickerBtnTS2, timePickerBtnTS2, datePickerBtnTS3, timePickerBtnTS3, btn_guest;
     private DBHandler dbHandler;
     private int mYear, mMonth, mDay, mHour, mMinute;
+    private ArrayList<String> guests;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,10 +74,12 @@ public class CreateEventActivity extends AppCompatActivity {
         addEventBtn = findViewById(R.id.idBtnCreateEvent);
         viewEventButton = findViewById(R.id.idBtnCreateToViewEvent);
         profileBtn = findViewById(R.id.idBtnCreateToProfile);
-        guests= findViewById(R.id.idEdtEventGuest);
+        btn_guest = findViewById(R.id.btn_guest);
+        guestsEdt = findViewById(R.id.idEdtEventGuest);
         // creating a new dbhandler class
         // and passing our context to it.
         dbHandler = new DBHandler(CreateEventActivity.this);
+        guests = new ArrayList<>();
 
         viewEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -264,6 +268,15 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+        btn_guest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guests.add(guestsEdt.getText().toString());
+                Log.i("GUESTS", "added guest " + guestsEdt.getText().toString());
+                guestsEdt.setText("");
+            }
+        });
+
         // below line is to add on click listener for our add event button.
         addEventBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,6 +342,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot1Long); //getting event ID once its made
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot2Long);
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot3Long);
+                for (String guest : guests) {
+                    Log.i("GUESTS", "adding pt 2");
+                    dbHandler.addNewMessage(eventHost, guest, "INVITE " + id + " " + eventName);
+                    dbHandler.addGuestToGuestList(id, guest);
+                }
 
 //                dbHandler.addNewTimeslot(id, eventHost, timeSlot1Long); //getting event ID once its made
                 // after adding the data we are displaying a toast message.
@@ -344,6 +362,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 timeTxtTS2.setText("");
                 dateTxtTS3.setText("");
                 timeTxtTS3.setText("");
+                guestsEdt.setText("");
 
                 Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
                 intent.putExtra("username", username);

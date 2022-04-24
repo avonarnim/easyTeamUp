@@ -51,6 +51,11 @@ public class EventPageActivity extends AppCompatActivity {
             String username = extras.getString("username");
             Event eventInfo = dbHandler.getEventInfo(eventId);
 
+            Log.i("EVENTS", "event host: " + eventInfo.getHost());
+            Log.i("EVENTS", "cur user: " + username);
+            Log.i("EVENTS", "deadline : " + eventInfo.getDeadline());
+            Log.i("EVENTS", "cur time : " + System.currentTimeMillis());
+
             // if user is the host of this event AND event deadline has not passed, they are able to edit (EditText) the event
             if((eventInfo.getHost().equals(username)) && (eventInfo.getDeadline() < System.currentTimeMillis())) {
                 TextView eventIdText = new TextView(this);
