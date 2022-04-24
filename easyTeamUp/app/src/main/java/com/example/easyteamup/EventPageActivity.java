@@ -50,24 +50,23 @@ public class EventPageActivity extends AppCompatActivity {
             int eventId = extras.getInt("eventId");
             String username = extras.getString("username");
             Event eventInfo = dbHandler.getEventInfo(eventId);
+            ArrayList<Long> availableTimeslots = dbHandler.getAvailableTimeslots(eventId);
 
             Log.i("EVENTS", "event host: " + eventInfo.getHost());
             Log.i("EVENTS", "cur user: " + username);
             Log.i("EVENTS", "deadline : " + eventInfo.getDeadline());
             Log.i("EVENTS", "cur time : " + System.currentTimeMillis());
 
-            // if user is the host of this event AND event deadline has not passed, they are able to edit (EditText) the event
-            if((eventInfo.getHost().equals(username)) && (eventInfo.getDeadline() < System.currentTimeMillis())) {
-                TextView eventIdText = new TextView(this);
-                eventIdText.setText("Event ID: " + String.valueOf(eventId));
-                page.addView(eventIdText);
+            TextView eventIdText = new TextView(this);
+            eventIdText.setText("Event ID: " + String.valueOf(eventId));
+            page.addView(eventIdText);
 
-                TextView host = new TextView(this);
-                host.setText("Host:");
-                page.addView(host);
-                TextView hostText = new TextView(this);
-                hostText.setText(eventInfo.getHost());
-                page.addView(hostText);
+            TextView hostText = new TextView(this);
+            hostText.setText("Host: " + eventInfo.getHost());
+            page.addView(hostText);
+
+            // if user is the host of this event AND event deadline has not passed, they are able to edit (EditText) the event
+            if((eventInfo.getHost().equals(username)) && (eventInfo.getDeadline() > (Long.valueOf(System.currentTimeMillis()) / 100L))) {
 
                 TextView name = new TextView(this);
                 name.setText("Event Name:");
@@ -132,99 +131,112 @@ public class EventPageActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-            }
-            // user is not the host
-            else if (!eventInfo.getHost().equals(username)) {
-                List<String> guestList = dbHandler.getGuestList(eventId);
-                // loop through guest list and see if user is a guest
-                boolean onList = false;
-                for(int i = 0; i < guestList.size(); i++) {
-                    Log.d("guest list", guestList.get(i));
-                    if(guestList.get(i).equals(username)) {
-                        onList = true;
-                    }
-                }
-                // user is on the guest list
-                if (onList) {
-                    TextView eventIdText = new TextView(this);
-                    eventIdText.setText(String.valueOf(eventId));
-                    page.addView(eventIdText);
+            } else {
+                // Unmodifiable information is displayed if
+                // (1) the user is not the host
+                // (2) the user is the host and the deadline has passed
+                TextView nameText = new TextView(this);
+                nameText.setText("Event Name: " + eventInfo.getName());
+                page.addView(nameText);
 
-                    TextView nameText = new TextView(this);
-                    nameText.setText("Event Name: " + eventInfo.getName());
-                    page.addView(nameText);
+                TextView longitudeText = new TextView(this);
+                longitudeText.setText("Longitude: " + eventInfo.getLongitude());
+                page.addView(longitudeText);
 
-                    TextView hostText = new TextView(this);
-                    hostText.setText("Host: " + eventInfo.getHost());
-                    page.addView(hostText);
+                TextView latitudeText = new TextView(this);
+                latitudeText.setText("Latitude: " + eventInfo.getLatitude());
+                page.addView(latitudeText);
 
-                    TextView longitudeText = new TextView(this);
-                    longitudeText.setText("Longitude: " + eventInfo.getLongitude());
-                    page.addView(longitudeText);
+                TextView deadlineText = new TextView(this);
+                deadlineText.setText("Deadline: " + eventInfo.getDeadline());
+                page.addView(deadlineText);
 
-                    TextView latitudeText = new TextView(this);
-                    latitudeText.setText("Latitude: " + eventInfo.getLatitude());
-                    page.addView(latitudeText);
+                TextView finalTimeText = new TextView(this);
+                finalTimeText.setText("Final Time: " + eventInfo.getFinalTime());
+                page.addView(finalTimeText);
 
-                    TextView deadlineText = new TextView(this);
-                    deadlineText.setText("Deadline: " + eventInfo.getDeadline());
-                    page.addView(deadlineText);
-
-                    TextView finalTimeText = new TextView(this);
-                    finalTimeText.setText("Final Time: " + eventInfo.getFinalTime());
-                    page.addView(finalTimeText);
-
-                    Button withdrawBtn = new Button(this);
-                    withdrawBtn.setText("Withdraw");
-                    withdrawBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                    page.addView(withdrawBtn);
-
-                    withdrawBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // update event guest list and remove this user
-                            dbHandler.updateEventGuestList(eventId, username);
-                            // Send message to host
-                            dbHandler.addNewMessage(username, eventInfo.getHost(), "User " + username + " has withdrawn from your event " + eventInfo.getName());
-
-                            Intent intent = new Intent(EventPageActivity.this, ProfileActivity.class);
-                            intent.putExtra("username",username);
-                            startActivity(intent);
+                // if user is not the host
+                if (!eventInfo.getHost().equals(username)) {
+                    List<String> guestList = dbHandler.getGuestList(eventId);
+                    // loop through guest list and see if user is a guest
+                    boolean onList = false;
+                    for(int i = 0; i < guestList.size(); i++) {
+                        Log.d("guest list", guestList.get(i));
+                        if(guestList.get(i).equals(username)) {
+                            onList = true;
                         }
-                    });
-                }
+                    }
 
-                // User is not the host and not on guest list so they cannot edit event details (TextView)
-                else {
-                    TextView eventIdText = new TextView(this);
-                    Log.d("event id error spot", String.valueOf(eventId));
-                    eventIdText.setText(String.valueOf(eventId));
-                    Log.d("event id after", String.valueOf(eventId));
-                    page.addView(eventIdText);
+                    if (eventInfo.getDeadline() > (Long.valueOf(System.currentTimeMillis()) / 100L) && ((eventInfo.getType().equals("Private") && onList) || eventInfo.getType().equals("Public"))) {
+                        // if it's not too late to sign up for a timeslot,
+                        // (1) private events' guest list users may sign up for the event
+                        // (2) anyone can sign up for a public event
+                        TextView proposedTimes = new TextView(this);
+                        proposedTimes.setText("Proposed times: ");
+                        page.addView(proposedTimes);
 
-                    TextView nameText = new TextView(this);
-                    nameText.setText("Event Name: " + eventInfo.getName());
-                    page.addView(nameText);
+                        TextView timeslot1Text = new TextView(this);
+                        timeslot1Text.setText("" + availableTimeslots.get(0));
+                        page.addView(timeslot1Text);
 
-                    TextView hostText = new TextView(this);
-                    hostText.setText("Host: " + eventInfo.getHost());
-                    page.addView(hostText);
+                        timeslot1Text.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String timeslot = timeslot1Text.getText().toString();
+                                dbHandler.addNewTimeslot(eventId, username, Long.getLong(timeslot));
+                                Toast.makeText(EventPageActivity.this, "Timeslot " + timeslot + " has been added.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
-                    TextView longitudeText = new TextView(this);
-                    longitudeText.setText("Longitude: " + eventInfo.getLongitude());
-                    page.addView(longitudeText);
+                        TextView timeslot2Text = new TextView(this);
+                        timeslot2Text.setText("" + availableTimeslots.get(0));
+                        page.addView(timeslot2Text);
 
-                    TextView latitudeText = new TextView(this);
-                    latitudeText.setText("Latitude: " + eventInfo.getLatitude());
-                    page.addView(latitudeText);
+                        timeslot2Text.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String timeslot = timeslot2Text.getText().toString();
+                                dbHandler.addNewTimeslot(eventId, username, Long.getLong(timeslot));
+                                Toast.makeText(EventPageActivity.this, "Timeslot " + timeslot + " has been added.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
-                    TextView deadlineText = new TextView(this);
-                    deadlineText.setText("Deadline: " + eventInfo.getDeadline());
-                    page.addView(deadlineText);
+                        TextView timeslot3Text = new TextView(this);
+                        timeslot3Text.setText("" + availableTimeslots.get(2));
+                        page.addView(timeslot3Text);
 
-                    TextView finalTimeText = new TextView(this);
-                    finalTimeText.setText("Final Time: " + eventInfo.getFinalTime());
-                    page.addView(finalTimeText);
+                        timeslot3Text.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String timeslot = timeslot3Text.getText().toString();
+                                dbHandler.addNewTimeslot(eventId, username, Long.getLong(timeslot));
+                                Toast.makeText(EventPageActivity.this, "Timeslot " + timeslot + " has been added.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    // people on a guest list can always withdraw
+                    if (onList) {
+
+                        Button withdrawBtn = new Button(this);
+                        withdrawBtn.setText("Withdraw");
+                        withdrawBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                        page.addView(withdrawBtn);
+
+                        withdrawBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // update event guest list and remove this user
+                                dbHandler.updateEventGuestList(eventId, username);
+                                // Send message to host
+                                dbHandler.addNewMessage(username, eventInfo.getHost(), "User " + username + " has withdrawn from your event " + eventInfo.getName());
+
+                                Log.i("WITHDRAW 1", "sent message");
+                                Intent intent = new Intent(EventPageActivity.this, ProfileActivity.class);
+                                intent.putExtra("username",username);
+                                startActivity(intent);
+                            }
+                        });
+                    }
                 }
             }
         }

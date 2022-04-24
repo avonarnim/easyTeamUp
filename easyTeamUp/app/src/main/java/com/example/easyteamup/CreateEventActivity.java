@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import android.app.DatePickerDialog;
@@ -32,6 +33,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private String username;
+    private Boolean isPrivate = Boolean.TRUE;
     private EditText eventNameEdt, eventLatEdt, eventLongEdt, dateTxtDL, timeTxtDL, dateTxtTS1, timeTxtTS1, dateTxtTS2, timeTxtTS2, dateTxtTS3, timeTxtTS3, guestsEdt;
     private Button addEventBtn, profileBtn, viewEventButton, datePickerBtnDL, timePickerBtnDL, datePickerBtnTS1, timePickerBtnTS1, datePickerBtnTS2, timePickerBtnTS2, datePickerBtnTS3, timePickerBtnTS3, btn_guest;
     private DBHandler dbHandler;
@@ -369,6 +371,21 @@ public class CreateEventActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch(view.getId()) {
+            case R.id.radio_private:
+                if (checked)
+                    isPrivate = Boolean.TRUE;
+                    break;
+            case R.id.radio_public:
+                if (checked)
+                    isPrivate = Boolean.FALSE;
+                    break;
+        }
     }
 
     @Override

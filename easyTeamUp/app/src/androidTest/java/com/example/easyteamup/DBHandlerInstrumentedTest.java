@@ -35,6 +35,11 @@ public class DBHandlerInstrumentedTest {
     @Before
     public void setUp() {
         dataSource = new DBHandler(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        dataSource.deleteTableContents("events");
+        dataSource.deleteTableContents("profiles");
+        dataSource.deleteTableContents("timeslots");
+        dataSource.deleteTableContents("messages");
+        dataSource.deleteTableContents("guestlists");
     }
 
     @Test
@@ -284,9 +289,9 @@ public class DBHandlerInstrumentedTest {
     public void testPrivateEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
-        dataSource.addNewTimeslot(eventId, "sampleGuest", Long.valueOf(111000));
-        dataSource.getEventInfo(eventId);
-        assertEquals(dataSource.getEventInfo(eventId).getType(), "Private");
+        dataSource.addGuestToGuestList(eventId, "sampleGuest");
+        Event privateEvent = dataSource.getEventInfo(eventId);
+        assertEquals(privateEvent.getType(), "Private");
     }
 
     @Test

@@ -39,16 +39,21 @@
         android:layout_margin="10dp"
         android:hint="Enter Event Name" />
 
-    <RadioButton android:id="@+id/radio_public"
-        android:layout_width="wrap_content"
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Public Event"
-        />
-    <RadioButton android:id="@+id/radio_private"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Private Event"
-        />
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/radio_public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Public Event"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radio_private"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Private Event"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
 
     <!--edit text to display course tracks-->
     <EditText

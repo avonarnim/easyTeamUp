@@ -57,7 +57,10 @@ public class EventInstrumentedTests {
     public void setUp() {
         Intents.init();
         dataSource.deleteTableContents("events");
-    }
+        dataSource.deleteTableContents("messages");
+        dataSource.deleteTableContents("timeslots");
+        dataSource.deleteTableContents("guestlists");
+        dataSource.deleteTableContents("profiles");    }
 
     @After
     public void breakDown() {
@@ -86,7 +89,7 @@ public class EventInstrumentedTests {
         onView(withId(R.id.password))
                 .perform(typeText("guestPassword"), closeSoftKeyboard());
         onView(withId(R.id.signUpButton)).perform(click());
-        }
+    }
 
 
     @Test

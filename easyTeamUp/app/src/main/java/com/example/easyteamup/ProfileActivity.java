@@ -223,6 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
             page.addView(messagesText);
 
             ArrayList<Message> messages = dbHandler.getMessages(username);
+            Log.i("WITHDRAW", "num messages: " + messages.size());
             for (int i = 0; i < messages.size(); i++) {
                 TextView textView = new TextView(this);
                 String msg = messages.get(i).getBody();

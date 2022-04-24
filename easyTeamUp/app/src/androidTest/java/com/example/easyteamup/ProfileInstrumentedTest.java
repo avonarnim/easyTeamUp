@@ -50,6 +50,10 @@ public class ProfileInstrumentedTest {
     @Before
     public void setUp() {
         dataSource.deleteTableContents("events");
+        dataSource.deleteTableContents("messages");
+        dataSource.deleteTableContents("timeslots");
+        dataSource.deleteTableContents("guestlists");
+        dataSource.deleteTableContents("profiles");
     }
 
     @Test
@@ -140,7 +144,6 @@ public class ProfileInstrumentedTest {
                     .text("SAVE CHANGES")
                     .className("android.widget.Button"));
             saveButton.click();
-
     }
 
     @Test
@@ -148,6 +151,7 @@ public class ProfileInstrumentedTest {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         int eventId = dataSource.addNewEvent("testMessageEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(11111000));
         dataSource.addNewProfile("guestUsername", "guestPassword");
+        dataSource.addGuestToGuestList(eventId, "guestUsername");
         dataSource.addNewTimeslot(eventId, "guestUsername", currentTime+Long.valueOf(111000));
 
         onView(withId(R.id.username))
@@ -197,6 +201,10 @@ public class ProfileInstrumentedTest {
         dataSource.deleteTableContents("messages");
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         int eventId = dataSource.addNewEvent("testHostMessageEvent", "username", 0.0, 0.0, currentTime + Long.valueOf(11111000));
+        dataSource.addNewTimeslot(eventId, "username", currentTime+Long.valueOf(111000));
+        dataSource.addNewTimeslot(eventId, "username", currentTime+Long.valueOf(111001));
+        dataSource.addNewTimeslot(eventId, "username", currentTime+Long.valueOf(111002));
+        dataSource.addGuestToGuestList(eventId, "guest");
         dataSource.addNewTimeslot(eventId, "guest", currentTime + Long.valueOf(111000));
 
         onView(withId(R.id.username))
