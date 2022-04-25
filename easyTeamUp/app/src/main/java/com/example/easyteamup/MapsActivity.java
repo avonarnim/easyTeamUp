@@ -135,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Get events in bounds
                 // Several dummy events added to prove ability to show on map (without manually creating events while blackbox testing)
 
-                ArrayList<Event> events = dbHandler.getEventsInArea(bounds.northeast.latitude, bounds.northeast.longitude,
+                ArrayList<Event> events = dbHandler.getEventsInArea(username, bounds.northeast.latitude, bounds.northeast.longitude,
                         bounds.southwest.latitude, bounds.southwest.longitude, System.currentTimeMillis());
 
                 for (Event event : events) {

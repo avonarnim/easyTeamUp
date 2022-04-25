@@ -183,7 +183,7 @@ public class DBHandlerInstrumentedTest {
         Double leftLowerLat = -1.0;
         Double leftLowerLong = -1.0;
 
-        ArrayList<Event> eventsInArea = dataSource.getEventsInArea(rightUpperLat, rightUpperLong,
+        ArrayList<Event> eventsInArea = dataSource.getEventsInArea("", rightUpperLat, rightUpperLong,
                 leftLowerLat, leftLowerLong, currentTime);
         for (Event event : eventsInArea) {
             Integer inIncluded = 0;

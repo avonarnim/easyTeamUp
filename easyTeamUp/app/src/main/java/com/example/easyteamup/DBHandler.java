@@ -386,7 +386,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public ArrayList<Event> getEventsInArea(Double rightUpperLat, Double rightUpperLong,
+    public ArrayList<Event> getEventsInArea(String user, Double rightUpperLat, Double rightUpperLong,
                                             Double leftLowerLat, Double leftLowerLong, Long currentTime) {
         //getEventsInArea
         SQLiteDatabase db = this.getReadableDatabase();
@@ -431,7 +431,30 @@ public class DBHandler extends SQLiteOpenHelper {
             cursorEvents.close();
         }
 
+        ArrayList<Event> personalizedEvents = new ArrayList<>();
+        for (int i = 0; i < eventsList.size(); i++) {
+            Event ev = eventsList.get(i);
+            if (ev.getType() == "Private") {
+                if (userOnGuestList(user, ev.getId())) {
+                    personalizedEvents.add(ev);
+                }
+            } else if (ev.getType() == "Public") {
+                personalizedEvents.add(ev);
+            }
+        }
+
         return eventsList;
+    }
+
+    public Boolean userOnGuestList(String user, int eventId) {
+        ArrayList<String> guests = getGuestList(eventId);
+        Boolean onList = Boolean.FALSE;
+        for (String guest : guests) {
+            if (guest.equals(user)) {
+                onList = Boolean.TRUE;
+            }
+        }
+        return onList;
     }
 
     public Integer addGuestToGuestList(int eventId, String guest) {
