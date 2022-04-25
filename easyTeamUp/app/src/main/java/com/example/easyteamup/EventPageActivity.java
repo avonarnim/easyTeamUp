@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,6 +104,16 @@ public class EventPageActivity extends AppCompatActivity {
                 EditText finalTimeText = new EditText(this);
                 finalTimeText.setText(String.valueOf(eventInfo.getFinalTime()));
                 page.addView(finalTimeText);
+
+                TextView guestListTitle = new TextView(this);
+                guestListTitle.setText("Guest List:");
+                page.addView(guestListTitle);
+                ArrayList<String> guestList = dbHandler.getGuestList(eventId);
+                for(int i = 0; i < guestList.size(); i++) {
+                    TextView guest = new TextView(this);
+                    guest.setText(guestList.get(i));
+                    page.addView(guest);
+                }
 
                 Button saveBtn = new Button(this);
                 saveBtn.setText("Save Changes");
@@ -185,6 +197,7 @@ public class EventPageActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 String timeslot = timeslot1Text.getText().toString();
                                 dbHandler.addNewTimeslot(eventId, username, Long.getLong(timeslot));
+                                dbHandler.addGuestToGuestList(eventId, username);
                                 Toast.makeText(EventPageActivity.this, "Timeslot " + timeslot + " has been added.", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -198,6 +211,7 @@ public class EventPageActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 String timeslot = timeslot2Text.getText().toString();
                                 dbHandler.addNewTimeslot(eventId, username, Long.getLong(timeslot));
+                                dbHandler.addGuestToGuestList(eventId, username);
                                 Toast.makeText(EventPageActivity.this, "Timeslot " + timeslot + " has been added.", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -211,6 +225,7 @@ public class EventPageActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 String timeslot = timeslot3Text.getText().toString();
                                 dbHandler.addNewTimeslot(eventId, username, Long.getLong(timeslot));
+                                dbHandler.addGuestToGuestList(eventId, username);
                                 Toast.makeText(EventPageActivity.this, "Timeslot " + timeslot + " has been added.", Toast.LENGTH_SHORT).show();
                             }
                         });

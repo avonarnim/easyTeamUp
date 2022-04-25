@@ -18,7 +18,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "easyTeamUpDB";
 
     // below int is our database version
-    private static final int DB_VERSION = 20;
+    private static final int DB_VERSION = 25;
 
     // variables are for table names.
     private static final String EVENT_TABLE_NAME = "events";
@@ -335,17 +335,22 @@ public class DBHandler extends SQLiteOpenHelper {
         Cursor cursorEvents = db.rawQuery(query, null);
 
         ArrayList<Event> eventsList = new ArrayList<>();
+        ArrayList<String> eventNames = new ArrayList<>();
         if (cursorEvents.moveToFirst()) {
             do {
                 //Long time = getDecidedTime(cursorEvents.getInt(1));
-                eventsList.add(new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
-                        cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
-                        cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
-                        cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
-                        cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
-                        cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
-                        cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)),
-                        cursorEvents.getString(cursorEvents.getColumnIndex(PRIVACY_TYPE_COL))));
+                String eventName = cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL));
+                if(!eventNames.contains(eventName)) {
+                    eventNames.add(eventName);
+                    eventsList.add(new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
+                            cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
+                            cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
+                            cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
+                            cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
+                            cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
+                            cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)),
+                            cursorEvents.getString(cursorEvents.getColumnIndex(PRIVACY_TYPE_COL))));
+                }
             } while (cursorEvents.moveToNext());
         }
         cursorEvents.close();
@@ -366,18 +371,23 @@ public class DBHandler extends SQLiteOpenHelper {
         Cursor cursorEvents = db.rawQuery(query, null);
 
         ArrayList<Event> eventsList = new ArrayList<>();
+        ArrayList<String> eventNames = new ArrayList<>();
         if(cursorEvents != null) {
             if (cursorEvents.moveToFirst()) {
                 do {
                     //Long time = getDecidedTime(cursorEvents.getInt(1));
-                    eventsList.add(new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
-                            cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
-                            cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
-                            cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
-                            cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
-                            cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
-                            cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)),
-                            cursorEvents.getString(cursorEvents.getColumnIndex(PRIVACY_TYPE_COL))));
+                    String eventName = cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL));
+                    if(!eventNames.contains(eventName)) {
+                        eventNames.add(eventName);
+                        eventsList.add(new Event(cursorEvents.getInt(cursorEvents.getColumnIndex(EVENT_ID_COL)),
+                                cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_NAME_COL)),
+                                cursorEvents.getString(cursorEvents.getColumnIndex(EVENT_HOST_COL)),
+                                cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
+                                cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
+                                cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
+                                cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)),
+                                cursorEvents.getString(cursorEvents.getColumnIndex(PRIVACY_TYPE_COL))));
+                    }
                 } while (cursorEvents.moveToNext());
             }
             cursorEvents.close();
