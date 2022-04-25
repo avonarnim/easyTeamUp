@@ -59,7 +59,7 @@ public class ProfileInstrumentedTest {
     @Test
     public void testHostedEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("currentHostEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("currentHostEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
 
         onView(withId(R.id.username))
                 .perform(typeText("username"), closeSoftKeyboard());
@@ -80,7 +80,7 @@ public class ProfileInstrumentedTest {
     public void testPastEvent() {
 
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("pastSampleEvent", "username", 0.0, 0.0, currentTime-Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("pastSampleEvent", "username", 0.0, 0.0, currentTime-Long.valueOf(111000), "Public");
 
         onView(withId(R.id.username))
                 .perform(typeText("username"), closeSoftKeyboard());
@@ -101,7 +101,7 @@ public class ProfileInstrumentedTest {
     public void testFutureEvent() {
 
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleFutureEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(1110000));
+        int eventId = dataSource.addNewEvent("sampleFutureEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(1110000), "Public");
         dataSource.addNewTimeslot(eventId, "username", currentTime+Long.valueOf(111000));
 
         onView(withId(R.id.username))
@@ -123,7 +123,7 @@ public class ProfileInstrumentedTest {
     public void testHostEventChange() throws UiObjectNotFoundException {
 
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("changeHostEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(11111000));
+        int eventId = dataSource.addNewEvent("changeHostEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(11111000), "Public");
 
         onView(withId(R.id.username))
                 .perform(typeText("username"), closeSoftKeyboard());
@@ -149,7 +149,7 @@ public class ProfileInstrumentedTest {
     @Test
     public void testMessageSentToGuests() throws UiObjectNotFoundException {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("testMessageEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(11111000));
+        int eventId = dataSource.addNewEvent("testMessageEvent", "username", 0.0, 0.0, currentTime+Long.valueOf(11111000), "Public");
         dataSource.addNewProfile("guestUsername", "guestPassword");
         dataSource.addGuestToGuestList(eventId, "guestUsername");
         dataSource.addNewTimeslot(eventId, "guestUsername", currentTime+Long.valueOf(111000));
@@ -200,7 +200,7 @@ public class ProfileInstrumentedTest {
     public void testMessageSentToHost() throws UiObjectNotFoundException {
         dataSource.deleteTableContents("messages");
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("testHostMessageEvent", "username", 0.0, 0.0, currentTime + Long.valueOf(11111000));
+        int eventId = dataSource.addNewEvent("testHostMessageEvent", "username", 0.0, 0.0, currentTime + Long.valueOf(11111000), "Public");
         dataSource.addNewTimeslot(eventId, "username", currentTime+Long.valueOf(111000));
         dataSource.addNewTimeslot(eventId, "username", currentTime+Long.valueOf(111001));
         dataSource.addNewTimeslot(eventId, "username", currentTime+Long.valueOf(111002));

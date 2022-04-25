@@ -13,7 +13,7 @@ public class Event {
     private Long finalTime;
     private String type;
 
-    public Event(int id, String name, String host, double latitude, double longitude, Long deadline, Long finalTime) {
+    public Event(int id, String name, String host, double latitude, double longitude, Long deadline, Long finalTime, String privacy) {
         this.id = id;
         this.name = name;
         this.host = host;
@@ -21,6 +21,7 @@ public class Event {
         this.longitude= longitude;
         this.deadline = deadline;
         this.finalTime = finalTime;
+        this.type = privacy;
     }
 
     public int getId() {

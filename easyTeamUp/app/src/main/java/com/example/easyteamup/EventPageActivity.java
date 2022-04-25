@@ -116,7 +116,7 @@ public class EventPageActivity extends AppCompatActivity {
                         float latitude = Float.valueOf(latitudeText.getText().toString());
                         long deadline = Long.valueOf(deadlineText.getText().toString());
                         long finalTime = Long.valueOf(finalTimeText.getText().toString());
-                        Event updatedEvent = new Event(eventId, name, eventInfo.getHost(), latitude, longitude, deadline, finalTime);
+                        Event updatedEvent = new Event(eventId, name, eventInfo.getHost(), latitude, longitude, deadline, finalTime, eventInfo.getType());
                         // send updated event info to the database
                         dbHandler.updateEventInfo(updatedEvent);
 

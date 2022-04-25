@@ -49,7 +49,7 @@ public class DBHandlerInstrumentedTest {
 
     @Test
     public void testAddNewEvent() {
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, Long.valueOf(111000), "Public");
         Event retrievedEvent = dataSource.getEventInfo(eventId);
 
         assertTrue(retrievedEvent.getName().equals("sampleEvent"));
@@ -86,8 +86,8 @@ public class DBHandlerInstrumentedTest {
 
     @Test
     public void testUpdateEvent() {
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, Long.valueOf(111000));
-        Event newEvent = new Event(eventId, "newName", "", 1.0, 1.0, Long.valueOf(111001), Long.valueOf(111100));
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, Long.valueOf(111000), "Public");
+        Event newEvent = new Event(eventId, "newName", "", 1.0, 1.0, Long.valueOf(111001), Long.valueOf(111100), "Public");
         dataSource.updateEventInfo(newEvent);
 
         Event retrievedEvent = dataSource.getEventInfo(eventId);
@@ -111,7 +111,7 @@ public class DBHandlerInstrumentedTest {
     @Test
     public void testCurrentlyHostedEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
         ArrayList<Event> retrievedEvent = dataSource.currentlyHostingEvents("hostUsername", currentTime);
 
         assertTrue(retrievedEvent.get(0).getHost().equals("hostUsername"));
@@ -120,7 +120,7 @@ public class DBHandlerInstrumentedTest {
     @Test
     public void testFutureEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleFutureEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleFutureEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
         dataSource.addNewTimeslot(eventId, "sampleGuest", currentTime+Long.valueOf(11000));
         ArrayList<Event> retrievedEvent = dataSource.futureEvents("sampleGuest", currentTime);
 
@@ -137,7 +137,7 @@ public class DBHandlerInstrumentedTest {
     @Test
     public void testPastEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("samplePastEvent", "hostUsername", 0.0, 0.0, currentTime-Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("samplePastEvent", "hostUsername", 0.0, 0.0, currentTime-Long.valueOf(111000), "Public");
         dataSource.addNewTimeslot(eventId, "sampleGuest", Long.valueOf(111000));
         ArrayList<Event> retrievedEvent = dataSource.pastEvents("sampleGuest", currentTime);
 
@@ -155,7 +155,7 @@ public class DBHandlerInstrumentedTest {
     @Test
     public void testUpdateGuestList() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
         dataSource.addNewTimeslot(eventId, "sampleGuest", Long.valueOf(111000));
         dataSource.updateEventGuestList(eventId, "sampleGuest");
 
@@ -174,8 +174,8 @@ public class DBHandlerInstrumentedTest {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         Long futureTime = new Long(System.currentTimeMillis() / 100L + 100000);
         for (int i = 0; i < 5; i++) {
-            includedEventIds.add(dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0+10*i, 0.0+10*i, futureTime));
-            excludedEventIds.add(dataSource.addNewEvent("sampleEvent", "hostUsername", 50.0+10*i, 50.0+10*i, futureTime));
+            includedEventIds.add(dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0+10*i, 0.0+10*i, futureTime, "Public"));
+            excludedEventIds.add(dataSource.addNewEvent("sampleEvent", "hostUsername", 50.0+10*i, 50.0+10*i, futureTime, "Public"));
         }
 
         Double rightUpperLat = 49.0;
@@ -200,7 +200,7 @@ public class DBHandlerInstrumentedTest {
 
     @Test
     public void testGetAvailableTimeslots() {
-        int eventId = dataSource.addNewEvent("timeslotTestEvent", "hostUsername", 0.0, 0.0, Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("timeslotTestEvent", "hostUsername", 0.0, 0.0, Long.valueOf(111000), "Public");
         dataSource.addNewTimeslot(eventId, "hostUsername", Long.valueOf(111005));
         dataSource.addNewTimeslot(eventId, "hostUsername", Long.valueOf(111006));
         dataSource.addNewTimeslot(eventId, "guestUsername", Long.valueOf(111007));
@@ -242,7 +242,7 @@ public class DBHandlerInstrumentedTest {
     public void testDecideOnTime() throws InterruptedException {
         Long mostFrequent = Long.valueOf(111005);
 
-        int eventId = dataSource.addNewEvent("decideOnTimeTestEvent", "hostUsername", 0.0, 0.0, Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("decideOnTimeTestEvent", "hostUsername", 0.0, 0.0, Long.valueOf(111000), "Public");
         dataSource.addNewTimeslot(eventId, "hostUsername", mostFrequent);
         dataSource.addNewTimeslot(eventId, "hostUsername", Long.valueOf(111006));
         dataSource.addNewTimeslot(eventId, "hostUsername", Long.valueOf(111007));
@@ -262,7 +262,7 @@ public class DBHandlerInstrumentedTest {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         Long fiveSecondsAwayDeadline = currentTime + 5;
 
-        int eventId = dataSource.addNewEvent("decideOnTimeTestEvent", "hostUsername", 0.0, 0.0, fiveSecondsAwayDeadline);
+        int eventId = dataSource.addNewEvent("decideOnTimeTestEvent", "hostUsername", 0.0, 0.0, fiveSecondsAwayDeadline, "Public");
         dataSource.addNewTimeslot(eventId, "hostUsername", mostFrequent);
         dataSource.addNewTimeslot(eventId, "hostUsername", Long.valueOf(111006));
         dataSource.addNewTimeslot(eventId, "hostUsername", Long.valueOf(111007));
@@ -288,7 +288,7 @@ public class DBHandlerInstrumentedTest {
     @Test
     public void testPrivateEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Private");
         dataSource.addGuestToGuestList(eventId, "sampleGuest");
         Event privateEvent = dataSource.getEventInfo(eventId);
         assertEquals(privateEvent.getType(), "Private");
@@ -297,8 +297,7 @@ public class DBHandlerInstrumentedTest {
     @Test
     public void testPublicEvent() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
-        dataSource.getEventInfo(eventId);
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
         assertEquals(dataSource.getEventInfo(eventId).getType(), "Public");
     }
 }

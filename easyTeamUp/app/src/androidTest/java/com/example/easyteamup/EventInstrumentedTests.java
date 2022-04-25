@@ -70,7 +70,7 @@ public class EventInstrumentedTests {
     @Test
     public void testDeadline() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
         //verify that the toast pops up and you can't enter it
         //onView(withText("Make sure the Deadline is before all Timeslots...")).check(matches(isDisplayed()));
         onView(withId(R.id.username))
@@ -83,7 +83,7 @@ public class EventInstrumentedTests {
     @Test
     public void testJoinPublic() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
         onView(withId(R.id.username))
                 .perform(typeText("guest"), closeSoftKeyboard());
         onView(withId(R.id.password))
@@ -95,7 +95,7 @@ public class EventInstrumentedTests {
     @Test
     public void testJoinTimeSlot() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
         onView(withId(R.id.username))
                 .perform(typeText("guest"), closeSoftKeyboard());
         onView(withId(R.id.password))
@@ -106,7 +106,7 @@ public class EventInstrumentedTests {
     @Test
     public void testSentInvites() throws UiObjectNotFoundException {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
             dataSource.addNewTimeslot(eventId, "guest", currentTime + Long.valueOf(111000));
 
             onView(withId(R.id.username))
@@ -119,7 +119,7 @@ public class EventInstrumentedTests {
     @Test
     public void testEventCreateToProfile() {
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
-        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000));
+        int eventId = dataSource.addNewEvent("sampleEvent", "hostUsername", 0.0, 0.0, currentTime+Long.valueOf(111000), "Public");
         dataSource.addNewTimeslot(eventId, "guest", currentTime + Long.valueOf(111000));
 
         onView(withId(R.id.username))

@@ -32,8 +32,7 @@ import java.util.Date;
 public class CreateEventActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private String username;
-    private Boolean isPrivate = Boolean.TRUE;
+    private String username, privacy = "Private";
     private EditText eventNameEdt, eventLatEdt, eventLongEdt, dateTxtDL, timeTxtDL, dateTxtTS1, timeTxtTS1, dateTxtTS2, timeTxtTS2, dateTxtTS3, timeTxtTS3, guestsEdt;
     private Button addEventBtn, profileBtn, viewEventButton, datePickerBtnDL, timePickerBtnDL, datePickerBtnTS1, timePickerBtnTS1, datePickerBtnTS2, timePickerBtnTS2, datePickerBtnTS3, timePickerBtnTS3, btn_guest;
     private DBHandler dbHandler;
@@ -340,7 +339,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                 // on below line we are calling a method to add new
                 // event to sqlite data and pass all our values to it.
-                int id = dbHandler.addNewEvent(eventName, eventHost, eventLat, eventLong, eventDeadlineLong);
+                int id = dbHandler.addNewEvent(eventName, eventHost, eventLat, eventLong, eventDeadlineLong, privacy);
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot1Long); //getting event ID once its made
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot2Long);
                 dbHandler.addNewTimeslot(id, eventHost, timeSlot3Long);
@@ -379,11 +378,11 @@ public class CreateEventActivity extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.radio_private:
                 if (checked)
-                    isPrivate = Boolean.TRUE;
+                    privacy = "Private";
                     break;
             case R.id.radio_public:
                 if (checked)
-                    isPrivate = Boolean.FALSE;
+                    privacy = "Public";
                     break;
         }
     }

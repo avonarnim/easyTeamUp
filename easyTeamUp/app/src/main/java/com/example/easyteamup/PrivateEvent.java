@@ -8,7 +8,7 @@ public class PrivateEvent extends Event {
     public String type = "Private";
 
     public PrivateEvent(int id, String name, String host, double latitude, double longitude, Long deadline, Long finalTime) {
-        super(id, name, host, latitude, longitude, deadline, finalTime);
+        super(id, name, host, latitude, longitude, deadline, finalTime, "Private");
     }
     public List<String> getGuestList() {
         return this.guestList;

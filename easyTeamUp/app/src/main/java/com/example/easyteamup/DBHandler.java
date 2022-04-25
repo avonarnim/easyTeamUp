@@ -35,6 +35,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String LONGITUDE_COL = "longitude";
     private static final String DEADLINE_COL = "deadline";
     private static final String FINAL_TIME_COL = "finalTime";
+    private static final String PRIVACY_TYPE_COL = "privacyType";
     // NOTE: going to get "interested users" through users who have selections in time slot table
     // NOTE: going to get "time slots" from time slots table
     // NOTE: going to get "available time slots" (i.e. what's fed to interested users) from time slots table using event host id
@@ -79,7 +80,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 + LATITUDE_COL + " REAL,"
                 + LONGITUDE_COL + " REAL,"
                 + DEADLINE_COL + " INTEGER,"
-                + FINAL_TIME_COL + " INTEGER)";
+                + FINAL_TIME_COL + " INTEGER,"
+                + PRIVACY_TYPE_COL + " STRING)";
 
         // Profile table
         String createProfiles = "CREATE TABLE IF NOT EXISTS " + PROFILE_TABLE_NAME + " ("
@@ -123,7 +125,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // Inserts a new event into the Event table
-    public int addNewEvent(String eventName, String eventHost, Double latitude, Double longitude, Long deadline) {
+    public int addNewEvent(String eventName, String eventHost, Double latitude, Double longitude, Long deadline, String privacy) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -134,6 +136,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(LATITUDE_COL, latitude);
         values.put(LONGITUDE_COL, longitude);
         values.put(DEADLINE_COL, deadline);
+        values.put(PRIVACY_TYPE_COL, privacy);
 
         //db.insert(EVENT_TABLE_NAME, null, values);
         Long rowID = db.insert(EVENT_TABLE_NAME, null, values);
@@ -227,9 +230,8 @@ public class DBHandler extends SQLiteOpenHelper {
                     cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
                     cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
                     cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
-                    cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)));
-            if (getGuestList(eventId).size() == 0) toReturn.makePublic();
-            else toReturn.makePrivate();
+                    cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)),
+                    cursorEvents.getString(cursorEvents.getColumnIndex(PRIVACY_TYPE_COL)));
             return toReturn;
         }
         else return null;
@@ -308,7 +310,8 @@ public class DBHandler extends SQLiteOpenHelper {
                         cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
                         cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
                         cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
-                        cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL))));
+                        cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)),
+                        cursorEvents.getString(cursorEvents.getColumnIndex(PRIVACY_TYPE_COL))));
             } while (cursorEvents.moveToNext());
         }
         cursorEvents.close();
@@ -341,7 +344,8 @@ public class DBHandler extends SQLiteOpenHelper {
                         cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
                         cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
                         cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
-                        cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL))));
+                        cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)),
+                        cursorEvents.getString(cursorEvents.getColumnIndex(PRIVACY_TYPE_COL))));
             } while (cursorEvents.moveToNext());
         }
         cursorEvents.close();
@@ -372,7 +376,8 @@ public class DBHandler extends SQLiteOpenHelper {
                             cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
                             cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
                             cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
-                            cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL))));
+                            cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)),
+                            cursorEvents.getString(cursorEvents.getColumnIndex(PRIVACY_TYPE_COL))));
                 } while (cursorEvents.moveToNext());
             }
             cursorEvents.close();
@@ -419,7 +424,8 @@ public class DBHandler extends SQLiteOpenHelper {
                             cursorEvents.getDouble(cursorEvents.getColumnIndex(LATITUDE_COL)),
                             cursorEvents.getDouble(cursorEvents.getColumnIndex(LONGITUDE_COL)),
                             cursorEvents.getLong(cursorEvents.getColumnIndex(DEADLINE_COL)),
-                            cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL))));
+                            cursorEvents.getLong(cursorEvents.getColumnIndex(FINAL_TIME_COL)),
+                            cursorEvents.getString(cursorEvents.getColumnIndex(PRIVACY_TYPE_COL))));
                 } while (cursorEvents.moveToNext());
             }
             cursorEvents.close();
