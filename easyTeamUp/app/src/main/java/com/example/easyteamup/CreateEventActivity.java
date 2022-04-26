@@ -372,6 +372,7 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    //how to make it so that it cannot be both TODO
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
 
@@ -390,6 +391,7 @@ public class CreateEventActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        //would this be used for search??? TODO
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
