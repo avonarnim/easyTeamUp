@@ -291,7 +291,9 @@ public class CreateEventActivity extends AppCompatActivity {
                 Double eventLat = new Double(latString);
                 Double eventLong = new Double(longString);
                 String dateDL = dateTxtDL.getText().toString();
+                Log.i("CREATE EVENT", "string date deadline: " + dateDL);
                 String timeDL = timeTxtDL.getText().toString();
+                Log.i("CREATE EVENT", "string time deadline: " + timeDL);
                 String dateTS1 = dateTxtTS1.getText().toString();
                 String timeTS1 = timeTxtTS1.getText().toString();
                 String dateTS2 = dateTxtTS2.getText().toString();
@@ -300,16 +302,19 @@ public class CreateEventActivity extends AppCompatActivity {
                 String timeTS3 = timeTxtTS3.getText().toString();
 
                 String eventDeadline = dateDL + " " + timeDL;
+                Log.i("CREATE EVENT", "string total deadline: " + eventDeadline);
+
                 String timeSlot1 = dateTS1+ " " + timeTS1;
                 String timeSlot2 = dateTS2+ " " + timeTS2;
                 String timeSlot3 = dateTS3+ " " + timeTS3;
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-m-yyyy hh:mm");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm");
                 Date parsedDateTimeDL;
                 Date parsedDateTimeTS1;
                 Date parsedDateTimeTS2;
                 Date parsedDateTimeTS3;
                 try {
                     parsedDateTimeDL = dateFormat.parse(eventDeadline);
+                    Log.i("CREATE EVENT", "parsed datetime deadline: " + parsedDateTimeDL);
                     parsedDateTimeTS1 = dateFormat.parse(timeSlot1);
                     parsedDateTimeTS2 = dateFormat.parse(timeSlot2);
                     parsedDateTimeTS3 = dateFormat.parse(timeSlot3);
@@ -325,6 +330,8 @@ public class CreateEventActivity extends AppCompatActivity {
                     return;
                 }
                 Long eventDeadlineLong = parsedDateTimeDL.getTime();
+                Log.i("CREATE EVENT", "Long deadline: " + String.valueOf(eventDeadlineLong));
+
                 Long timeSlot1Long = parsedDateTimeTS1.getTime();
                 Long timeSlot2Long = parsedDateTimeTS2.getTime();
                 Long timeSlot3Long = parsedDateTimeTS3.getTime();

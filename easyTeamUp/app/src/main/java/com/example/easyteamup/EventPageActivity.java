@@ -27,8 +27,12 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class EventPageActivity extends AppCompatActivity {
 
@@ -42,6 +46,8 @@ public class EventPageActivity extends AppCompatActivity {
 
         dbHandler = new DBHandler(EventPageActivity.this);
         page = findViewById(R.id.linearLayout);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm", Locale.ENGLISH);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         TextView titleText = new TextView(this);
         titleText.setText("Event");
@@ -95,14 +101,19 @@ public class EventPageActivity extends AppCompatActivity {
                 deadline.setText("Deadline:");
                 page.addView(deadline);
                 EditText deadlineText = new EditText(this);
-                deadlineText.setText(String.valueOf(eventInfo.getDeadline()));
+                Date date = new Date((eventInfo.getDeadline()));
+                String formattedDate = sdf.format(date);
+                Log.i("EVENTS", "formatted time : " + formattedDate);
+                deadlineText.setText(formattedDate);
                 page.addView(deadlineText);
 
                 TextView finalTime = new TextView(this);
                 finalTime.setText("Final Time:");
                 page.addView(finalTime);
                 EditText finalTimeText = new EditText(this);
-                finalTimeText.setText(String.valueOf(eventInfo.getFinalTime()));
+                date = new Date((eventInfo.getFinalTime()));
+                formattedDate = sdf.format(date);
+                finalTimeText.setText(formattedDate);
                 page.addView(finalTimeText);
 
                 TextView guestListTitle = new TextView(this);
@@ -189,7 +200,9 @@ public class EventPageActivity extends AppCompatActivity {
                         page.addView(proposedTimes);
 
                         TextView timeslot1Text = new TextView(this);
-                        timeslot1Text.setText("" + availableTimeslots.get(0));
+                        Date date = new Date(availableTimeslots.get(0));
+                        String formattedDate = sdf.format(date);
+                        timeslot1Text.setText(formattedDate);
                         page.addView(timeslot1Text);
 
                         timeslot1Text.setOnClickListener(new View.OnClickListener() {
@@ -202,7 +215,9 @@ public class EventPageActivity extends AppCompatActivity {
                         });
 
                         TextView timeslot2Text = new TextView(this);
-                        timeslot2Text.setText("" + availableTimeslots.get(0));
+                        date = new Date(availableTimeslots.get(1));
+                        formattedDate = sdf.format(date);
+                        timeslot2Text.setText(formattedDate);
                         page.addView(timeslot2Text);
 
                         timeslot2Text.setOnClickListener(new View.OnClickListener() {
@@ -215,8 +230,12 @@ public class EventPageActivity extends AppCompatActivity {
                         });
 
                         TextView timeslot3Text = new TextView(this);
-                        timeslot3Text.setText("" + availableTimeslots.get(2));
+                        date = new Date(availableTimeslots.get(2));
+                        formattedDate = sdf.format(date);
+                        timeslot3Text.setText(formattedDate);
                         page.addView(timeslot3Text);
+
+
 
                         timeslot3Text.setOnClickListener(new View.OnClickListener() {
                             @Override
