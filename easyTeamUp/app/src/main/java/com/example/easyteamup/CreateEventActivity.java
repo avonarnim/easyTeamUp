@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.app.DatePickerDialog;
@@ -38,6 +39,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private DBHandler dbHandler;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private ArrayList<String> guests;
+    private TextView addedGuests;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +83,7 @@ public class CreateEventActivity extends AppCompatActivity {
         // and passing our context to it.
         dbHandler = new DBHandler(CreateEventActivity.this);
         guests = new ArrayList<>();
+        addedGuests = (TextView) findViewById(R.id.text_added_guests);
 
         viewEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,8 +275,10 @@ public class CreateEventActivity extends AppCompatActivity {
         btn_guest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guests.add(guestsEdt.getText().toString());
+                String guest = guestsEdt.getText().toString();
+                guests.add(guest);
                 Log.i("GUESTS", "added guest " + guestsEdt.getText().toString());
+                addedGuests.setText(addedGuests.getText().toString() + "\n " + guest);
                 guestsEdt.setText("");
             }
         });
