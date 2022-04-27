@@ -20,3 +20,7 @@ similar to:
 
 To run the app, first launch AVD in the emulator. Then, build the app and
 run it from Android Studio.
+
+## Changes made during the Sprint
+
+# Search bar
