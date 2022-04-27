@@ -111,9 +111,12 @@ public class EventPageActivity extends AppCompatActivity {
                 finalTime.setText("Final Time:");
                 page.addView(finalTime);
                 EditText finalTimeText = new EditText(this);
-                date = new Date((eventInfo.getFinalTime()));
-                formattedDate = sdf.format(date);
-                finalTimeText.setText(formattedDate);
+                finalTimeText.setText(String.valueOf(eventInfo.getFinalTime()));
+                if(eventInfo.getFinalTime() != 0) {
+                    date = new Date((eventInfo.getFinalTime()));
+                    formattedDate = sdf.format(date);
+                    finalTimeText.setText(formattedDate);
+                }
                 page.addView(finalTimeText);
 
                 TextView guestListTitle = new TextView(this);
