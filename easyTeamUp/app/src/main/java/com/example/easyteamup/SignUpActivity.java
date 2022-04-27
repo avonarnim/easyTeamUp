@@ -64,6 +64,12 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
+                Boolean alreadyExists = dbHandler.checkIfUsernameExists(username);
+                if (alreadyExists) {
+                    Toast.makeText(SignUpActivity.this, "This username already exists.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 // on below line we are calling a method to add new
                 // course to sqlite data and pass all our values to it.
                 dbHandler.addNewProfile(username, password);

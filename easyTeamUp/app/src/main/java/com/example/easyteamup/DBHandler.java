@@ -207,7 +207,21 @@ public class DBHandler extends SQLiteOpenHelper {
             cursorProfile.close();
             Log.i("login", String.valueOf(validProfile));
             return validProfile;
+    }
+
+    public Boolean checkIfUsernameExists(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Boolean usernameAlreadyExists = Boolean.FALSE;
+        String query = "SELECT * FROM profiles WHERE username=\"" + username + "\"";
+
+        Cursor cursorProfile = db.rawQuery(query,
+                null);
+        if (cursorProfile.moveToFirst()) {
+            usernameAlreadyExists = Boolean.TRUE;
         }
+        cursorProfile.close();
+        return usernameAlreadyExists;
+    }
 
     // Returns a specified user's profile
     // Wraps calls to get past events, upcoming events, and messages

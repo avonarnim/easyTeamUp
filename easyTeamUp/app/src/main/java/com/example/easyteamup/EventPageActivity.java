@@ -181,15 +181,6 @@ public class EventPageActivity extends AppCompatActivity {
                 // if user is not the host
                 if (!eventInfo.getHost().equals(username)) {
                     boolean onList = dbHandler.userOnGuestList(username, eventId);
-//                    List<String> guestList = dbHandler.getGuestList(eventId);
-//                    // loop through guest list and see if user is a guest
-//                    boolean onList = false;
-//                    for(int i = 0; i < guestList.size(); i++) {
-//                        Log.d("guest list", guestList.get(i));
-//                        if(guestList.get(i).equals(username)) {
-//                            onList = true;
-//                        }
-//                    }
 
                     if (eventInfo.getDeadline() > (Long.valueOf(System.currentTimeMillis()) / 100L) && ((eventInfo.getType().equals("Private") && onList) || eventInfo.getType().equals("Public"))) {
                         // if it's not too late to sign up for a timeslot,
