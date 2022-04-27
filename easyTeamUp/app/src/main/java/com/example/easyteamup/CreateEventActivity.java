@@ -7,14 +7,17 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -38,10 +41,13 @@ public class CreateEventActivity extends AppCompatActivity {
     private DBHandler dbHandler;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private ArrayList<String> guests;
+    private ListView listView;
+    private ArrayAdapter<String> arrayAdapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -81,7 +87,10 @@ public class CreateEventActivity extends AppCompatActivity {
         // and passing our context to it.
         dbHandler = new DBHandler(CreateEventActivity.this);
         guests = new ArrayList<>();
-
+        listView = findViewById(R.id.list);
+        String[] usernames = dbHandler.getAllUsers();
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernames);
+        listView.setAdapter(arrayAdapter);
         viewEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -393,7 +402,22 @@ public class CreateEventActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         //would this be used for search??? TODO
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        MenuItem menuItem = menu.findItem(R.id.floating_search_view);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Type Guest Username");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                arrayAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

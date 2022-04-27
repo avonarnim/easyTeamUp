@@ -585,4 +585,24 @@ public class DBHandler extends SQLiteOpenHelper {
             return selectedEvent.getFinalTime();
         }
     }
+
+    @SuppressLint("Range")
+    public String[] getAllUsers() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursorUsernames = db.rawQuery("SELECT username FROM profiles ", null);
+        ArrayList<String> users = new ArrayList<String>();
+        if (cursorUsernames.moveToFirst()) {
+            do {
+                users.add(cursorUsernames.getString(cursorUsernames.getColumnIndex(USERNAME_COL)));
+            } while (cursorUsernames.moveToNext());
+        }
+        cursorUsernames.close();
+        //make array list then convert to array array at return
+        System.out.println(users.size());
+        String[] usersArray = new String[users.size()];
+        for (int i = 0; i < usersArray.length;i++) {
+            usersArray[i] = users.get(i);
+        }
+        return  usersArray;
+    }
 }
