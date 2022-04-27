@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -105,6 +106,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         TextView titleText = new TextView(this);
         titleText.setText("Your Profile");
+        titleText.setTextSize(33);
+        titleText.setTextColor(-16777216);
+        titleText.setTypeface(Typeface.SERIF);
         page.addView(titleText);
 
         Bundle extras = getIntent().getExtras();
@@ -112,6 +116,8 @@ public class ProfileActivity extends AppCompatActivity {
             username = extras.getString("username");
             TextView usernameText = new TextView(this);
             usernameText.setText("Username: " + username);
+            usernameText.setTextSize(23);
+            usernameText.setTextColor(-16777216);
             page.addView(usernameText);
 
             Profile prof = dbHandler.getPublicProfile(username);
@@ -142,8 +148,8 @@ public class ProfileActivity extends AppCompatActivity {
                 });
             }
 
-            TextView pastText = new TextView(this);
-            pastText.setText("Past Events");
+            Button pastText = new Button(this);
+            pastText.setText("View Past Events");
             page.addView(pastText);
 
             // insert views for past events
@@ -170,6 +176,9 @@ public class ProfileActivity extends AppCompatActivity {
 
             TextView attendingText = new TextView(this);
             attendingText.setText("Upcoming Events (Attending)");
+            attendingText.setTextSize(23);
+            attendingText.setTextColor(-16777216);
+            attendingText.setTypeface(Typeface.DEFAULT_BOLD);
             page.addView(attendingText);
 
             // insert views for upcoming attending events
@@ -194,6 +203,9 @@ public class ProfileActivity extends AppCompatActivity {
 
             TextView hostingText = new TextView(this);
             hostingText.setText("Upcoming Events (Hosting)");
+            hostingText.setTextSize(23);
+            hostingText.setTextColor(-16777216);
+            hostingText.setTypeface(Typeface.DEFAULT_BOLD);
             page.addView(hostingText);
 
             // insert views for upcoming hosting events
@@ -220,6 +232,9 @@ public class ProfileActivity extends AppCompatActivity {
             // insert views for all Messages
             TextView messagesText = new TextView(this);
             messagesText.setText("Messages");
+            messagesText.setTextSize(23);
+            messagesText.setTextColor(-16777216);
+            messagesText.setTypeface(Typeface.DEFAULT_BOLD);
             page.addView(messagesText);
 
             ArrayList<Message> messages = dbHandler.getMessages(username);
@@ -253,7 +268,7 @@ public class ProfileActivity extends AppCompatActivity {
                 page.addView(textView);
             }
 
-            TextView createEvent = new TextView(this);
+            Button createEvent = new Button(this);
             createEvent.setText("Create Event");
             createEvent.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -265,7 +280,7 @@ public class ProfileActivity extends AppCompatActivity {
             });
             page.addView(createEvent);
 
-            TextView viewMaps = new TextView(this);
+            Button viewMaps = new Button(this);
             viewMaps.setText("View Map");
             viewMaps.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -277,8 +292,10 @@ public class ProfileActivity extends AppCompatActivity {
             });
             page.addView(viewMaps);
 
-            TextView signOut = new TextView(this);
+            Button signOut = new Button(this);
             signOut.setText("Sign Out");
+            signOut.setBackgroundColor(-65536);
+            signOut.setTextColor(-1);
             signOut.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

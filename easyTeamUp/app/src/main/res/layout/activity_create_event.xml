@@ -234,36 +234,19 @@
         android:layout_below="@+id/btn_dateTS2"
         android:layout_alignLeft="@+id/btn_dateTS2"
         android:layout_alignStart="@+id/btn_dateTS2" />
-    <!--button for adding new event-->
-    <EditText
-        android:id="@+id/idEdtEventGuest"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:hint="Enter Guests" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Guest"
-        android:id="@+id/btn_guest"
-        android:layout_below="@+id/idEdtEventGuest"
-        android:layout_alignLeft="@+id/btn_dateTS2"
-        android:layout_alignStart="@+id/btn_dateTS2" />
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/floating_search_view"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-
         />
-
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ListView
         android:id="@+id/list"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:drawSelectorOnTop="true"
-        android:maxLength= "4" />
+        />
+
     <Button
         android:id="@+id/idBtnCreateEvent"
         android:layout_width="match_parent"
@@ -271,9 +254,6 @@
         android:layout_margin="10dp"
         android:text="Create Event"
         android:textAllCaps="false" />
-
-    <!--button for switching to map page-->
-
 
 </LinearLayout>
 </ScrollView>

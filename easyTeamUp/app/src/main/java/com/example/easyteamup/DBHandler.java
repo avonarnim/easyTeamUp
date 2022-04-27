@@ -603,6 +603,7 @@ public class DBHandler extends SQLiteOpenHelper {
         for (int i = 0; i < usersArray.length;i++) {
             usersArray[i] = users.get(i);
         }
+        Log.i("USERs",   " user total: " + users.size());
         return  usersArray;
     }
 }

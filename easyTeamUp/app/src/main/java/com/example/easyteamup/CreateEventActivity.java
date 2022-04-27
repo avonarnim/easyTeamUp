@@ -48,7 +48,6 @@ public class CreateEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             username = extras.getString("username");
@@ -81,8 +80,8 @@ public class CreateEventActivity extends AppCompatActivity {
         addEventBtn = findViewById(R.id.idBtnCreateEvent);
         viewEventButton = findViewById(R.id.idBtnCreateToViewEvent);
         profileBtn = findViewById(R.id.idBtnCreateToProfile);
-        btn_guest = findViewById(R.id.btn_guest);
-        guestsEdt = findViewById(R.id.idEdtEventGuest);
+        //btn_guest = findViewById(R.id.btn_guest);
+        //guestsEdt = findViewById(R.id.idEdtEventGuest);
         // creating a new dbhandler class
         // and passing our context to it.
         dbHandler = new DBHandler(CreateEventActivity.this);
@@ -91,6 +90,27 @@ public class CreateEventActivity extends AppCompatActivity {
         String[] usernames = dbHandler.getAllUsers();
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernames);
         listView.setAdapter(arrayAdapter);
+        SearchView searchView = (SearchView) findViewById(R.id.floating_search_view);
+        searchView.setQueryHint("Type Guest Username");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!guests.contains(query)) {
+                    guests.add(query);
+                    Log.i("GUESTS", "added guest " + query + " guests total: " + guests.size());
+                }
+                searchView.setQuery("", false);
+                searchView.clearFocus();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.equals(""))
+                    arrayAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
         viewEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -278,14 +298,14 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        btn_guest.setOnClickListener(new View.OnClickListener() {
+        /**btn_guest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 guests.add(guestsEdt.getText().toString());
-                Log.i("GUESTS", "added guest " + guestsEdt.getText().toString());
+             Log.i("GUESTS", "added guest " + guestsEdt.getText().toString());
                 guestsEdt.setText("");
             }
-        });
+        }); **/
 
         // below line is to add on click listener for our add event button.
         addEventBtn.setOnClickListener(new View.OnClickListener() {
@@ -381,10 +401,8 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    //how to make it so that it cannot be both TODO
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
-
         switch(view.getId()) {
             case R.id.radio_private:
                 if (checked)
@@ -398,32 +416,20 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //would this be used for search??? TODO
-        getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem menuItem = menu.findItem(R.id.floating_search_view);
-        SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("Type Guest Username");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                arrayAdapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 }
+
+/**
+ * <Button
+ *         android:layout_width="wrap_content"
+ *         android:layout_height="wrap_content"
+ *         android:text="Add Guest"
+ *         android:id="@+id/btn_guest"
+ *         android:layout_below="@+id/idEdtEventGuest"
+ *         android:layout_alignLeft="@+id/btn_dateTS2"
+ *         android:layout_alignStart="@+id/btn_dateTS2" />
+ */
