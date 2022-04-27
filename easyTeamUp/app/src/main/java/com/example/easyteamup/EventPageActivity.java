@@ -197,7 +197,6 @@ public class EventPageActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 String timeslot = timeslot1Text.getText().toString();
                                 dbHandler.addNewTimeslot(eventId, username, Long.getLong(timeslot));
-                                dbHandler.addGuestToGuestList(eventId, username);
                                 Toast.makeText(EventPageActivity.this, "Timeslot " + timeslot + " has been added.", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -211,7 +210,6 @@ public class EventPageActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 String timeslot = timeslot2Text.getText().toString();
                                 dbHandler.addNewTimeslot(eventId, username, Long.getLong(timeslot));
-                                dbHandler.addGuestToGuestList(eventId, username);
                                 Toast.makeText(EventPageActivity.this, "Timeslot " + timeslot + " has been added.", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -225,7 +223,6 @@ public class EventPageActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 String timeslot = timeslot3Text.getText().toString();
                                 dbHandler.addNewTimeslot(eventId, username, Long.getLong(timeslot));
-                                dbHandler.addGuestToGuestList(eventId, username);
                                 Toast.makeText(EventPageActivity.this, "Timeslot " + timeslot + " has been added.", Toast.LENGTH_SHORT).show();
                             }
                         });
