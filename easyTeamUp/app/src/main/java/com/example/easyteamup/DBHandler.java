@@ -159,6 +159,16 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateProfile(String oldUsername, String username, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(USERNAME_COL, username);
+        values.put(PASSWORD_COL, password);
+
+        db.update(PROFILE_TABLE_NAME,values,"username=?",new String[]{oldUsername});
+    }
+
     public void uploadProfilePicture(String username, byte[] picture) {
         SQLiteDatabase db = this.getWritableDatabase();
 

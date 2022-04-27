@@ -44,6 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
     final int SELECT_PICTURE = 1;
     ImageView profilePic;
     String username;
+    String password;
     byte[] picture;
 
     void selectImage() {
@@ -110,6 +111,7 @@ public class ProfileActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             username = extras.getString("username");
+            password = extras.getString("password");
             TextView usernameText = new TextView(this);
             usernameText.setText("Username: " + username);
             page.addView(usernameText);
@@ -288,6 +290,21 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
             page.addView(signOut);
+
+
+            Button editProfile = new Button(this);
+            editProfile.setText("Edit Profile");
+            editProfile.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            editProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+                    intent.putExtra("username", username);
+                    intent.putExtra("password", password);
+                    startActivity(intent);
+                }
+            });
+            page.addView(editProfile);
         }
     }
 }

@@ -41,6 +41,10 @@
             android:exported="false"
             android:theme="@style/Theme.EasyTeamUp.NoActionBar"
             android:label="@string/activity_create_events"/>
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.EasyTeamUp.NoActionBar"/>
     </application>
 
 </manifest>
