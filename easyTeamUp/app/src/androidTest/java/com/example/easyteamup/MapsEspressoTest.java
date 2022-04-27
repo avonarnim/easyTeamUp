@@ -70,11 +70,11 @@ public class MapsEspressoTest {
         Intents.release();
     }
 
-//    Events that have already occurred and are in the past should not appear
+    //    Events that have already occurred and are in the past should not appear
     @Test
     public void testPastDeadlinePastDecidedTime() {
 
-        Integer pastEventId = dataSource.addNewEvent("past event", "username", -5.0, -5.0, Long.valueOf(10), "Public");
+        Integer pastEventId = dataSource.addNewEvent("past event", "username", 37.4, -122.1, Long.valueOf(10), "Public");
         dataSource.addNewTimeslot(pastEventId, "username", Long.valueOf(11));
         dataSource.addNewTimeslot(pastEventId, "username", Long.valueOf(12));
         dataSource.addNewTimeslot(pastEventId, "username", Long.valueOf(13));
@@ -93,11 +93,11 @@ public class MapsEspressoTest {
         }
     }
 
-//    Events that have a past deadline should still be findable
+    //    Events that have a past deadline should still be findable
     @Test
     public void testPastDeadlineFutureDecidedTime() {
 
-        Integer pastEventId = dataSource.addNewEvent("semi-past event", "username", -15.0, -15.0, Long.valueOf(10), "Public");
+        Integer pastEventId = dataSource.addNewEvent("semi-past event", "username", 37.4, -122.1, Long.valueOf(10), "Public");
         Event pastEventInfo = dataSource.getEventInfo(pastEventId);
         Long futureTime = new Long(System.currentTimeMillis() + 100000);
         dataSource.addNewTimeslot(pastEventId, "username", Long.valueOf(11));
@@ -116,13 +116,13 @@ public class MapsEspressoTest {
         }
     }
 
-//    Events that have a future deadline should be findable
+    //    Events that have a future deadline should be findable
     @Test
     public void testFutureDeadlineFutureDecidedTime() {
 
         Long futureDeadline = new Long(System.currentTimeMillis() + 100000);
         Long futureDecidedTime = new Long(System.currentTimeMillis() + 100001);
-        Integer futureEventId = dataSource.addNewEvent("future event", "username", -5.0, -5.0, futureDeadline, "Public");
+        Integer futureEventId = dataSource.addNewEvent("future event", "username", 37.4, -122.1, futureDeadline, "Public");
         dataSource.addNewTimeslot(futureEventId, "username", futureDecidedTime);
         dataSource.addNewTimeslot(futureEventId, "username", futureDecidedTime+2);
         dataSource.addNewTimeslot(futureEventId, "username", futureDecidedTime+1);
@@ -142,10 +142,10 @@ public class MapsEspressoTest {
         }
     }
 
-//    Events on the map should be clickable and yield the event detail page.
+    //    Events on the map should be clickable and yield the event detail page.
     @Test
     public void testMapElementClickable() throws UiObjectNotFoundException, InterruptedException {
-        int eventId = dataSource.addNewEvent("good event", "username", 40.0, 40.0, Long.valueOf(System.currentTimeMillis() + 100000), "Public");
+        int eventId = dataSource.addNewEvent("good event", "username", 37.4, -122.1, Long.valueOf(System.currentTimeMillis() + 100000), "Public");
         dataSource.addNewTimeslot(eventId, "username", new Long(System.currentTimeMillis() + 100001));
         dataSource.addNewTimeslot(eventId, "username", new Long(System.currentTimeMillis() + 100002));
         dataSource.addNewTimeslot(eventId, "username", new Long(System.currentTimeMillis() + 100003));
@@ -158,19 +158,19 @@ public class MapsEspressoTest {
     }
 
 
-//    Events should appear on the map as the map moves to encompass their locations
+    //    Events should appear on the map as the map moves to encompass their locations
     @Test
     public void testMapPinsDynamic() {
 
         Long futureDeadline = new Long(System.currentTimeMillis() + 100000);
-        int eventId = dataSource.addNewEvent("future event", "username", -5.0, -5.0, futureDeadline, "Public");
+        int eventId = dataSource.addNewEvent("future event", "username", 37.4, -122.1, futureDeadline, "Public");
         dataSource.addNewTimeslot(eventId, "username", new Long(System.currentTimeMillis() + 100001));
         dataSource.addNewTimeslot(eventId, "username", new Long(System.currentTimeMillis() + 100002));
         dataSource.addNewTimeslot(eventId, "username", new Long(System.currentTimeMillis() + 100003));
 
-        double baseLongitude = 45.0;
-        for (int i = 0 ; i < 5; i++) {
-            eventId = dataSource.addNewEvent("future event - out of bounds", "username", -5.0, baseLongitude+i*30.0, futureDeadline, "Public");
+        double baseLongitude = -122.1;
+        for (int i = 0 ; i < 50; i++) {
+            eventId = dataSource.addNewEvent("future event - out of bounds", "username", 37.4, baseLongitude+i*0.3, futureDeadline, "Public");
             dataSource.addNewTimeslot(eventId, "username", new Long(System.currentTimeMillis() + 100001));
             dataSource.addNewTimeslot(eventId, "username", new Long(System.currentTimeMillis() + 100002));
             dataSource.addNewTimeslot(eventId, "username", new Long(System.currentTimeMillis() + 100003));
@@ -179,9 +179,10 @@ public class MapsEspressoTest {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         try {
             // perform scroll
+            TimeUnit.SECONDS.sleep(1);
             Espresso.onView(ViewMatchers.withId(R.id.map)).perform(ViewActions.swipeLeft());
             UiObject marker = device.findObject(new UiSelector().descriptionContains("future event - out of bounds"));
-            TimeUnit.SECONDS.sleep(2);
+            TimeUnit.SECONDS.sleep(1);
 
             marker.click();
             return;
