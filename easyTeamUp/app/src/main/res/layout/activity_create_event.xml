@@ -38,7 +38,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:hint="Enter Event Name" />
-
+    <TextView
+        android:id="@+id/type_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Type"
+        android:textSize="20sp"
+        android:textStyle="italic"/>
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -77,7 +83,7 @@
         android:layout_height="wrap_content"
         android:text="Deadline Selection"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="italic"/>
     <!--edit text for course description-->
     <EditText
         android:layout_width="200dp"
@@ -86,7 +92,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -95,7 +100,6 @@
         android:layout_alignBottom="@+id/dl_in_date"
         android:layout_toRightOf="@+id/dl_in_date"
         android:layout_toEndOf="@+id/dl_in_date" />
-
     <EditText
         android:layout_width="200dp"
         android:layout_height="wrap_content"
@@ -117,7 +121,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Timeslot 1 Selection"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textStyle="italic"/>
     <!--edit text for course description-->
     <EditText
         android:layout_width="200dp"
@@ -159,7 +164,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Timeslot 2 Selection"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textStyle="italic"/>
     <!--edit text for course description-->
     <EditText
         android:layout_width="200dp"
@@ -199,7 +205,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Timeslot 3 Selection"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textStyle="italic"/>
     <!--edit text for course description-->
     <EditText
         android:layout_width="200dp"

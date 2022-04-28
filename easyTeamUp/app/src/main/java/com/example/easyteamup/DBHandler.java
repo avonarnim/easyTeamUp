@@ -227,7 +227,6 @@ public class DBHandler extends SQLiteOpenHelper {
     // Returns a specified user's profile
     // Wraps calls to get past events, upcoming events, and messages
     public Profile getPublicProfile(String username) {
-
         Long currentTime = new Long(System.currentTimeMillis() / 100L);
         ArrayList<Event> pastEvents = pastEvents(username, currentTime);
         ArrayList<Event> futureEvents = futureEvents(username, currentTime);

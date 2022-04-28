@@ -109,7 +109,6 @@ public class ProfileActivity extends AppCompatActivity {
         titleText.setText("Your Profile");
         titleText.setTextSize(33);
         titleText.setTextColor(-16777216);
-        titleText.setTypeface(Typeface.SERIF);
         page.addView(titleText);
 
         Bundle extras = getIntent().getExtras();
@@ -118,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
             password = extras.getString("password");
             TextView usernameText = new TextView(this);
             usernameText.setText("Username: " + username);
-            usernameText.setTextSize(23);
+            usernameText.setTextSize(20);
             usernameText.setTextColor(-16777216);
             page.addView(usernameText);
 
@@ -178,7 +177,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             TextView attendingText = new TextView(this);
             attendingText.setText("Upcoming Events (Attending)");
-            attendingText.setTextSize(23);
+            attendingText.setTextSize(20);
             attendingText.setTextColor(-16777216);
             attendingText.setTypeface(Typeface.DEFAULT_BOLD);
             page.addView(attendingText);
@@ -205,7 +204,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             TextView hostingText = new TextView(this);
             hostingText.setText("Upcoming Events (Hosting)");
-            hostingText.setTextSize(23);
+            hostingText.setTextSize(20);
             hostingText.setTextColor(-16777216);
             hostingText.setTypeface(Typeface.DEFAULT_BOLD);
             page.addView(hostingText);
@@ -234,7 +233,7 @@ public class ProfileActivity extends AppCompatActivity {
             // insert views for all Messages
             TextView messagesText = new TextView(this);
             messagesText.setText("Messages");
-            messagesText.setTextSize(23);
+            messagesText.setTextSize(20);
             messagesText.setTextColor(-16777216);
             messagesText.setTypeface(Typeface.DEFAULT_BOLD);
             page.addView(messagesText);
@@ -294,19 +293,7 @@ public class ProfileActivity extends AppCompatActivity {
             });
             page.addView(viewMaps);
 
-            Button signOut = new Button(this);
-            signOut.setText("Sign Out");
-            signOut.setBackgroundColor(-65536);
-            signOut.setTextColor(-1);
-            signOut.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ProfileActivity.this, SignUpActivity.class);
-                    intent.removeExtra("username");
-                    startActivity(intent);
-                }
-            });
-            page.addView(signOut);
+
 
 
             Button editProfile = new Button(this);
@@ -320,8 +307,22 @@ public class ProfileActivity extends AppCompatActivity {
                     intent.putExtra("password", password);
                     startActivity(intent);
                 }
+
             });
             page.addView(editProfile);
+            Button signOut = new Button(this);
+            signOut.setText("Sign Out");
+            signOut.setBackgroundColor(-65536);
+            signOut.setTextColor(-1);
+            signOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfileActivity.this, SignUpActivity.class);
+                    intent.removeExtra("username");
+                    startActivity(intent);
+                }
+            });
+            page.addView(signOut);
         }
     }
 }
