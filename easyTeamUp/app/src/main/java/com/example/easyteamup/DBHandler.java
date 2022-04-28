@@ -11,6 +11,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import android.util.Log;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -618,5 +619,27 @@ public class DBHandler extends SQLiteOpenHelper {
             }
             return selectedEvent.getFinalTime();
         }
+    }
+
+    @SuppressLint("Range")
+    public String[] getAllUsers() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursorUsernames = db.rawQuery("SELECT username FROM profiles ", null);
+        ArrayList<String> users = new ArrayList<String>();
+        if (cursorUsernames.moveToFirst()) {
+            do {
+                users.add(cursorUsernames.getString(cursorUsernames.getColumnIndex(USERNAME_COL)));
+            } while (cursorUsernames.moveToNext());
+        }
+        cursorUsernames.close();
+        //make array list then convert to array array at return
+        System.out.println(users.size());
+        String[] usersArray = new String[users.size()];
+        Collections.sort(users);
+        for (int i = 0; i < usersArray.length;i++) {
+            usersArray[i] = users.get(i);
+        }
+        Log.i("USERs",   " user total: " + users.size());
+        return  usersArray;
     }
 }

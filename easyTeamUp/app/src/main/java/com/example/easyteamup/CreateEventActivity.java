@@ -7,14 +7,18 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +44,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private int mYear, mMonth, mDay, mHour, mMinute;
     private ArrayList<String> guests;
     private TextView addedGuests;
+    private ListView listView;
+    private ArrayAdapter<String> arrayAdapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,14 +83,45 @@ public class CreateEventActivity extends AppCompatActivity {
         addEventBtn = findViewById(R.id.idBtnCreateEvent);
         viewEventButton = findViewById(R.id.idBtnCreateToViewEvent);
         profileBtn = findViewById(R.id.idBtnCreateToProfile);
-        btn_guest = findViewById(R.id.btn_guest);
-        guestsEdt = findViewById(R.id.idEdtEventGuest);
+        //btn_guest = findViewById(R.id.btn_guest);
+        //guestsEdt = findViewById(R.id.idEdtEventGuest);
         // creating a new dbhandler class
         // and passing our context to it.
         dbHandler = new DBHandler(CreateEventActivity.this);
         guests = new ArrayList<>();
         addedGuests = (TextView) findViewById(R.id.text_added_guests);
+        listView = findViewById(R.id.list);
+        String[] usernames = dbHandler.getAllUsers();
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernames);
+        listView.setAdapter(arrayAdapter);
+        SearchView searchView = (SearchView) findViewById(R.id.floating_search_view);
+        searchView.setQueryHint("Type Guest Username");
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                searchView.setQuery(arrayAdapter.getItem(position), false);
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!guests.contains(query)) {
+                    guests.add(query);
+                    Log.i("GUESTS", "added guest " + query + " guests total: " + guests.size());
+                }
+                searchView.setQuery("", false);
+                searchView.clearFocus();
+                arrayAdapter.getFilter().filter(null);
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.equals(""))
+                    arrayAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
         viewEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,15 +309,6 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        btn_guest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String guest = guestsEdt.getText().toString();
-                guests.add(guest);
-                Log.i("GUESTS", "added guest " + guestsEdt.getText().toString());
-                addedGuests.setText(addedGuests.getText().toString() + "\n " + guest);
-            }
-        });
 
         // below line is to add on click listener for our add event button.
         addEventBtn.setOnClickListener(new View.OnClickListener() {
@@ -385,7 +413,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
-
         switch(view.getId()) {
             case R.id.radio_private:
                 if (checked)
@@ -399,16 +426,20 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 }
+
+/**
+ * <Button
+ *         android:layout_width="wrap_content"
+ *         android:layout_height="wrap_content"
+ *         android:text="Add Guest"
+ *         android:id="@+id/btn_guest"
+ *         android:layout_below="@+id/idEdtEventGuest"
+ *         android:layout_alignLeft="@+id/btn_dateTS2"
+ *         android:layout_alignStart="@+id/btn_dateTS2" />
+ */

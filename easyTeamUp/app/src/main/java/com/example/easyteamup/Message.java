@@ -11,6 +11,7 @@ public class Message {
         this.recipient = recipient;
         this.body = body;
     }
+    //maybe make a method with available time slots and radio button
 
     public String getBody() {
         return body;
