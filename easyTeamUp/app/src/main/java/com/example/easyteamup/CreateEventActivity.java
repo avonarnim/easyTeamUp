@@ -14,6 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -92,6 +93,12 @@ public class CreateEventActivity extends AppCompatActivity {
         listView.setAdapter(arrayAdapter);
         SearchView searchView = (SearchView) findViewById(R.id.floating_search_view);
         searchView.setQueryHint("Type Guest Username");
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                searchView.setQuery(arrayAdapter.getItem(position), false);
+            }
+        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -101,6 +108,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
                 searchView.setQuery("", false);
                 searchView.clearFocus();
+                arrayAdapter.getFilter().filter(null);
                 return false;
             }
 

@@ -11,6 +11,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import android.util.Log;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -600,6 +601,7 @@ public class DBHandler extends SQLiteOpenHelper {
         //make array list then convert to array array at return
         System.out.println(users.size());
         String[] usersArray = new String[users.size()];
+        Collections.sort(users);
         for (int i = 0; i < usersArray.length;i++) {
             usersArray[i] = users.get(i);
         }
